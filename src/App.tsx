@@ -1,11 +1,13 @@
 import './styles/App.css'
+import { ThemeProvider } from 'styled-components';
+import { theme } from './styles/theme';
+import LandingPage from './pages/LandingPage02';
 
 function App() {
   return (
-    <div className="app">
-      <h1>KBO Note</h1>
-      <p>React + TypeScript + Vite</p>
-    </div>
+    <ThemeProvider theme={theme}>
+      <LandingPage />
+    </ThemeProvider>
   )
 }
 
