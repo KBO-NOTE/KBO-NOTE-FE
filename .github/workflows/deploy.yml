@@ -33,6 +33,6 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "dist/*"
-          target: "/home/kbo-note/"
+          target: "/home/kbo-note/kbo-note"
           strip_components: 0
           rm: true  # 업로드 전 대상 디렉토리의 기존 파일 삭제
