@@ -24,3 +24,8 @@ dist-ssr
 *.sw?
 /.claude
 tsconfig.tsbuildinfo
+
+tmpclaude-0bd7-cwd
+tmpclaude-aecd-cwd
+tmpclaude-ddaa-cwd
+tmpclaude-ebaf-cwd

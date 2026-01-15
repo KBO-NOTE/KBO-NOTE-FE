@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { theme } from "../styles/theme";
 import MainLogo from "../assets/logo/main01.svg";
 import Google from "../assets/icons/Google.svg";
-import Kakao from "../assets/icons/kakao.svg";
+import Kakao from "../assets/icons/Kakao.svg";
 
 const LandingPage01 = () => {
   return (
