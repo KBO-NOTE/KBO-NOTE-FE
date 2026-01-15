@@ -1,22 +1,24 @@
-import styled from 'styled-components';
-import { theme } from '../styles/theme';
-import MainLogo from '../assets/logo/main01.svg';
-import Google from '../assets/icons/google.svg';
-import Kakao from '../assets/icons/kakao.svg';
+import styled from "styled-components";
+import { theme } from "../styles/theme";
+import MainLogo from "../assets/logo/main01.svg";
+import Google from "../assets/icons/Google.svg";
+import Kakao from "../assets/icons/kakao.svg";
 
 const LandingPage01 = () => {
   return (
     <PageContainer>
-        <LogoWapper>
-          <SubTitle>선수의 오늘, 슬기로운 크보생활</SubTitle>
-          <Logo src={MainLogo} alt="KBO NOTE Logo" />
-        </LogoWapper>
-        <GoogleLogin><img src={Google} alt="Google Logo" />
-          <Login>구글 계정 로그인</Login>
-        </GoogleLogin>
-        <KakaoLogin><img src={Kakao} alt="Kakao Logo" />
-          <Login>카카오 계정 로그인</Login>
-        </KakaoLogin>
+      <LogoWapper>
+        <SubTitle>선수의 오늘, 슬기로운 크보생활</SubTitle>
+        <Logo src={MainLogo} alt="KBO NOTE Logo" />
+      </LogoWapper>
+      <GoogleLogin>
+        <img src={Google} alt="Google Logo" />
+        <Login>구글 계정 로그인</Login>
+      </GoogleLogin>
+      <KakaoLogin>
+        <img src={Kakao} alt="Kakao Logo" />
+        <Login>카카오 계정 로그인</Login>
+      </KakaoLogin>
     </PageContainer>
   );
 };
@@ -39,7 +41,7 @@ const LogoWapper = styled.div`
   gap: 4px;
   text-align: center;
   align-items: center;
-  margin-bottom: 160px; 
+  margin-bottom: 160px;
 `;
 
 const SubTitle = styled.div`
@@ -62,8 +64,8 @@ const Logo = styled.img`
 `;
 
 const GoogleLogin = styled.button`
-  color: ${theme.colors.light03}; 
-  display: flex; 
+  color: ${theme.colors.light03};
+  display: flex;
   align-items: center;
   justify-content: center;
   width: 362px;
@@ -77,8 +79,8 @@ const GoogleLogin = styled.button`
 `;
 
 const KakaoLogin = styled.button`
-  background: #FEE500;  
-  display: flex; 
+  background: #fee500;
+  display: flex;
   align-items: center;
   justify-content: center;
   width: 362px;
@@ -91,7 +93,7 @@ const KakaoLogin = styled.button`
 
 const Login = styled.div`
   ${theme.typography.button01}
-  color: ${theme.colors.black}; 
+  color: ${theme.colors.black};
 `;
 
 export default LandingPage01;
