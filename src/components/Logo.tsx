@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const LogoWrapper = styled.div`
   height: 55px;
@@ -11,7 +11,7 @@ const LogoWrapper = styled.div`
 `;
 
 const LogoText = styled.span`
-  font-family: 'Airlash Raiders', sans-serif;
+  font-family: "Airlash Raiders", sans-serif;
   font-weight: 400;
   font-size: 55px;
   line-height: 100%;
@@ -26,11 +26,11 @@ const LogoSpan = styled.span`
   letter-spacing: 0.01em; /* 1% */
 `;
 
-interface LogoProps {
-  size?: 'lg' | 'md' | 'sm'; 
-}
+// interface LogoProps {
+//   size?: 'lg' | 'md' | 'sm';
+// }
 
-const Logo = ({ size = 'lg' }: LogoProps) => {
+const Logo = () => {
   return (
     <LogoWrapper>
       <LogoText>
