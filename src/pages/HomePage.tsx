@@ -4,7 +4,6 @@ const HomePage = () => {
   return (
     <Container>
       {/* Appbar */}
-      adgaa
       <Appbar>
         <AppbarContent>
           <Logo>KBO NOTE</Logo>

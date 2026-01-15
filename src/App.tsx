@@ -11,15 +11,9 @@ function App() {
 }
 
 const MainContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 640px;
+  margin: 0 auto;
   height: 100vh;
-  width: 100%;
-
-  > * {
-    width: 640px;
-  }
 `;
 
 export default App;
