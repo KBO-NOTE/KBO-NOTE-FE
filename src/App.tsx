@@ -7,12 +7,14 @@ import { ThemeProvider } from "styled-components";
 import { theme } from "./styles/theme";
 import { QueryClient } from "@tanstack/react-query";
 import { Outlet } from "react-router-dom";
+import GlobalStyle from "./styles/GlobalStyle";
 
 const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
+        <GlobalStyle/>
         <MainContainer>
           <Outlet />
         </MainContainer>
