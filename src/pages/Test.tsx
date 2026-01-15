@@ -1,4 +1,4 @@
-import './styles/App.css'
+import '../styles/App.css'
 import { ThemeProvider } from 'styled-components';
 import { theme } from '../styles/theme';
 import Home from '../components/appBar/Home';

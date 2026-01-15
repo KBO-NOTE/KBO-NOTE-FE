@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { theme } from "../styles/theme";
 
 const HomePage = () => {
   return (
@@ -182,14 +183,14 @@ export default HomePage;
 
 // Styled Components
 const Container = styled.div`
-  background-color: #f4f6f9;
+  background-color: ${theme.colors.bg01};
   min-height: 100vh;
   position: relative;
   width: 100%;
 `;
 
 const Appbar = styled.div`
-  background-color: #007aff;
+  background-color: ${theme.colors.primary500};
   height: 110px;
   width: 100%;
   position: sticky;
@@ -212,7 +213,7 @@ const AppbarContent = styled.div`
 const Logo = styled.h1`
   font-family: "Airlash Raiders", sans-serif;
   font-size: 20px;
-  color: white;
+  color: ${theme.colors.white};
   margin: 0;
   font-weight: normal;
   letter-spacing: 1.32px;
@@ -257,13 +258,13 @@ const PlayerSection = styled.div`
   top: 142px;
   left: 16px;
   right: 16px;
-  background: white;
-  border-radius: 20px;
+  background: ${theme.colors.white};
+  border-radius: ${theme.radius.xl};
   padding: 12px 16px;
   display: flex;
   gap: 9px;
   overflow-x: auto;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.16);
+  box-shadow: ${theme.shadows.m};
   z-index: 50;
 `;
 
@@ -281,7 +282,7 @@ const PlayerImage = styled.div<{ active?: boolean }>`
   height: 72px;
   border-radius: 13.5px;
   border: ${(props) =>
-    props.active ? "1.125px solid #007aff" : "1px solid #eaecee"};
+    props.active ? `1.125px solid ${theme.colors.primary500}` : `1px solid ${theme.colors.light02}`};
   box-shadow: ${(props) =>
     props.active ? "0px 0px 6.75px 0px rgba(0, 44, 103, 0.5)" : "none"};
   overflow: hidden;
@@ -296,12 +297,8 @@ const PlayerImageInner = styled.div`
 `;
 
 const PlayerName = styled.p<{ active?: boolean }>`
-  font-family: "Pretendard", sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 22px;
-  letter-spacing: -0.56px;
-  color: ${(props) => (props.active ? "#111827" : "#9ca3af")};
+  ${theme.typography.body03}
+  color: ${(props) => (props.active ? theme.colors.dark01 : theme.colors.dark04)};
   margin: 0;
   text-align: center;
 `;
@@ -309,9 +306,9 @@ const PlayerName = styled.p<{ active?: boolean }>`
 const PlayerAddCard = styled.button`
   width: 72px;
   height: 72px;
-  border-radius: 12px;
-  border: 1px solid #eaecee;
-  background: white;
+  border-radius: ${theme.radius.m};
+  border: 1px solid ${theme.colors.light02};
+  background: ${theme.colors.white};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -328,7 +325,7 @@ const PlusIcon = styled.div`
   &::after {
     content: "";
     position: absolute;
-    background-color: #9ca3af;
+    background-color: ${theme.colors.dark04};
   }
 
   &::before {
@@ -362,19 +359,14 @@ const Section = styled.section`
 `;
 
 const SectionTitle = styled.h2`
-  font-family: "Pretendard", sans-serif;
-  font-size: 22px;
-  font-weight: 600;
-  line-height: 30px;
-  letter-spacing: -0.88px;
-  color: #111827;
+  ${theme.typography.h2}
   margin: 0;
 `;
 
 const MatchCard = styled.div`
-  background: white;
-  border: 1px solid #eaecee;
-  border-radius: 20px;
+  background: ${theme.colors.white};
+  border: 1px solid ${theme.colors.light02};
+  border-radius: ${theme.radius.xl};
   padding: 20px 16px;
   display: flex;
   flex-direction: column;
@@ -398,17 +390,13 @@ const TeamContainer = styled.div`
 const TeamLogo = styled.div`
   width: 64px;
   height: 64px;
-  border-radius: 8px;
+  border-radius: ${theme.radius.s};
   background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%);
 `;
 
 const TeamName = styled.p`
-  font-family: "Pretendard", sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 22px;
-  letter-spacing: -0.56px;
-  color: #9ca3af;
+  ${theme.typography.body03}
+  color: ${theme.colors.dark04};
   margin: 0;
 `;
 
@@ -418,17 +406,12 @@ const Score = styled.p<{ primary?: boolean }>`
   font-weight: 400;
   line-height: 36px;
   letter-spacing: -2.24px;
-  color: ${(props) => (props.primary ? "#007aff" : "#111827")};
+  color: ${(props) => (props.primary ? theme.colors.primary500 : theme.colors.dark01)};
   margin: 0;
 `;
 
 const ScoreDivider = styled.p`
-  font-family: "Pretendard", sans-serif;
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 36px;
-  letter-spacing: -1.12px;
-  color: #111827;
+  ${theme.typography.h1}
   margin: 0;
 `;
 
@@ -441,7 +424,7 @@ const MatchInfo = styled.div`
 const NoticeIcon = styled.div`
   width: 24px;
   height: 24px;
-  background-color: #111827;
+  background-color: ${theme.colors.dark01};
   mask: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' stroke='%23111827' stroke-width='2'/%3E%3C/svg%3E")
     center/contain no-repeat;
   flex-shrink: 0;
@@ -454,30 +437,22 @@ const MatchDetails = styled.div`
 `;
 
 const MatchText = styled.p`
-  font-family: "Pretendard", sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 22px;
-  letter-spacing: -0.56px;
-  color: #1b1b1b;
+  ${theme.typography.body03}
   margin: 0;
 `;
 
 const InningBadge = styled.div`
-  background-color: #eaecee;
-  border-radius: 999px;
+  background-color: ${theme.colors.light02};
+  border-radius: ${theme.radius.full};
   padding: 4px 12px;
-  font-family: "Pretendard", sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 18px;
-  color: #374151;
+  ${theme.typography.caption01}
+  color: ${theme.colors.dark02};
 `;
 
 const StatsCard = styled.div`
-  background: white;
-  border: 1px solid #eaecee;
-  border-radius: 20px;
+  background: ${theme.colors.white};
+  border: 1px solid ${theme.colors.light02};
+  border-radius: ${theme.radius.xl};
   padding: 20px 16px;
   display: flex;
   flex-direction: column;
@@ -485,8 +460,8 @@ const StatsCard = styled.div`
 `;
 
 const AchievementBadge = styled.div`
-  background: linear-gradient(90deg, #0066d3 0%, #004996 100%);
-  border-radius: 8px;
+  background: linear-gradient(90deg, ${theme.colors.primary600} 0%, #004996 100%);
+  border-radius: ${theme.radius.s};
   padding: 12px 16px;
   display: flex;
   align-items: center;
@@ -516,12 +491,8 @@ const BadgeScroll = styled.div`
 `;
 
 const BadgeText = styled.span`
-  font-family: "Pretendard", sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 22px;
-  letter-spacing: -0.56px;
-  color: white;
+  ${theme.typography.body03}
+  color: ${theme.colors.white};
   white-space: nowrap;
   flex-shrink: 0;
 `;
@@ -530,7 +501,7 @@ const Dot = styled.div`
   width: 2px;
   height: 2px;
   border-radius: 50%;
-  background-color: white;
+  background-color: ${theme.colors.white};
   opacity: 0.6;
   flex-shrink: 0;
 `;
@@ -548,8 +519,8 @@ const StatsRow = styled.div`
 
 const StatItem = styled.div`
   flex: 1;
-  background-color: #fafbfd;
-  border-radius: 8px;
+  background-color: ${theme.colors.light01};
+  border-radius: ${theme.radius.s};
   padding: 12px 16px;
   display: flex;
   flex-direction: column;
@@ -557,21 +528,14 @@ const StatItem = styled.div`
 `;
 
 const StatLabel = styled.p`
-  font-family: "Pretendard", sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 18px;
-  color: #6b7280;
+  ${theme.typography.caption01}
+  color: ${theme.colors.dark03};
   margin: 0;
 `;
 
 const StatValue = styled.p`
-  font-family: "Pretendard", sans-serif;
-  font-size: 16px;
+  ${theme.typography.body01}
   font-weight: 600;
-  line-height: 24px;
-  letter-spacing: -0.64px;
-  color: #111827;
   margin: 0;
 `;
 
@@ -582,10 +546,10 @@ const FeedList = styled.div`
 `;
 
 const FeedItem = styled.a`
-  background: white;
-  border-radius: 20px;
+  background: ${theme.colors.white};
+  border-radius: ${theme.radius.xl};
   overflow: hidden;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.16);
+  box-shadow: ${theme.shadows.m};
   text-decoration: none;
   cursor: pointer;
   display: flex;
@@ -620,7 +584,7 @@ const FeedAction = styled.div`
 const HeartIcon = styled.div`
   width: 24px;
   height: 24px;
-  background-color: #111827;
+  background-color: ${theme.colors.dark01};
   mask: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z' fill='%23111827'/%3E%3C/svg%3E")
     center/contain no-repeat;
 `;
@@ -628,27 +592,17 @@ const HeartIcon = styled.div`
 const ChatIcon = styled.div`
   width: 24px;
   height: 24px;
-  background-color: #111827;
+  background-color: ${theme.colors.dark01};
   mask: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z' stroke='%23111827' stroke-width='2'/%3E%3C/svg%3E")
     center/contain no-repeat;
 `;
 
 const FeedCount = styled.span`
-  font-family: "Pretendard", sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 22px;
-  letter-spacing: -0.56px;
-  color: #111827;
+  ${theme.typography.body03}
 `;
 
 const FeedTitle = styled.p`
-  font-family: "Pretendard", sans-serif;
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 26px;
-  letter-spacing: -0.72px;
-  color: #111827;
+  ${theme.typography.title}
   margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
