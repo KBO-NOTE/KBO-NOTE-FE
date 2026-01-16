@@ -16,7 +16,7 @@ const Button = ({ buttonText, onClick }: ButtonProps) => {
 
 const Container = styled.div`
     width: 100%;
-    min-width: 183px;
+    min-width: 362px;
     height: 56px;
     border-radius: ${theme.radius.full};
     padding: 16px 48px 16px 48px;
