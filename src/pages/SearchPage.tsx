@@ -4,23 +4,61 @@ import { theme } from "../styles/theme";
 import SearchIcon from "../assets/icons/search.svg";
 import CloseIcon from "../assets/icons/close.svg";
 import Button from "../components/button/ButtonDefault";
+import PlayerCardActive from "../components/landingPage/Active";
+import PlayerCardDefault from "../components/landingPage/Default";
+import { useNavigate } from 'react-router-dom';
+
+{/* 기본값 1 */ }
+const PLAYERS = [
+  { id: 1, name: "양의지" },
+  { id: 2, name: "양의지" },
+  { id: 3, name: "양의지" },
+];
 
 const SearchPage = () => {
+  const navigate = useNavigate();
+  const [selectedPlayerId, setSelectedPlayerId] = useState(1);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleClear = () => {
+    setSearchQuery("");
+  };
 
   return (
     <PageContainer>
       <HeaderFrame>
-        <IconWapper>
+        <IconWapper onClick={handleClear} style={{ cursor: 'pointer' }}>
           <Icon src={CloseIcon} alt="close icon" />
         </IconWapper>
         <TeamSearchWapper>
-          선수를 검색해보세요
+          <SearchInput 
+            placeholder="선수를 검색해보세요"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
           <IconWapper>
             <Icon src={SearchIcon} alt="search icon" />
           </IconWapper>
         </TeamSearchWapper>
       </HeaderFrame>
-      <PlayerListContent></PlayerListContent>
+      <CardWapper>
+        {PLAYERS.map((player) => (
+          player.id === selectedPlayerId ? (
+            <PlayerCardActive
+              key={player.id}
+              playerName={player.name}
+              onClick={() => setSelectedPlayerId(player.id)}
+            />
+          ) : (
+            <PlayerCardDefault
+              key={player.id}
+              playerName={player.name}
+              onClick={() => setSelectedPlayerId(player.id)}
+            />
+          )
+        ))}
+      </CardWapper>
       <ButtonWapper>
         <Button buttonText="선택 완료" />
       </ButtonWapper>
@@ -50,18 +88,26 @@ const HeaderFrame = styled.div`
 `;
 
 const TeamSearchWapper = styled.div`
-  ${theme.typography.body03}
-  color: ${theme.colors.dark03};
-  min-width: 330px;
-  width: 100%;
+  flex: 1;
   height: 44px;
-  justify-content: space-between;
   border-radius: ${theme.radius.full};
-  padding: 16px;
+  padding: 0 16px;
   background-color: ${theme.colors.light02};
   display: flex;
   align-items: center;
   box-sizing: border-box;
+`;
+
+const SearchInput = styled.input`
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  ${theme.typography.body03}
+  color: ${theme.colors.black};
+  &::placeholder {
+    color: ${theme.colors.dark03};
+  }
 `;
 
 const IconWapper = styled.div`
@@ -86,9 +132,14 @@ const ButtonWapper = styled.div`
   height: 56px;
 `;
 
-const PlayerListContent = styled.div`
-  flex-grow: 1;
-  margin-top: 24px;
+const CardWapper = styled.div`
+  width: fit-content;
+  height: fit-content;
+  top: 302px;
+  left: 16px;
+  gap: 16px;
+  display: flex;
+  padding: 40px 0px 40px 0px;
 `;
 
 export default SearchPage;
