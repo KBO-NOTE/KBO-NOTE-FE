@@ -9,7 +9,7 @@ interface ActiveProps {
 const Default = ({ playerName, onClick }: ActiveProps) => {
   const playerImage = new URL(
     `../../assets/images/players/${playerName}.png`,
-    import.meta.url
+    import.meta.url,
   ).href;
 
   return (
@@ -29,7 +29,10 @@ const Container = styled.div`
   position: relative;
   overflow: visible;
   box-sizing: border-box;
+<<<<<<< HEAD
   cursor: pointer;
+=======
+>>>>>>> origin/main
 `;
 
 const ImageWrapper = styled.div`

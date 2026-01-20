@@ -17,11 +17,11 @@ const Router = () => {
           element: <HomePage />,
         },
         {
-          path: "landingPage01",
+          path: "landing1",
           element: <LandingPage01 />,
         },
         {
-          path: "landingPage02",
+          path: "landing2",
           element: <LandingPage02 />,
         },
         {
@@ -31,7 +31,8 @@ const Router = () => {
         {
           path: "test",
           element: <Test />,
-        }
+        },
+        // 다른 페이지도 여기에 추가 가능
       ],
     },
   ]);
