@@ -3,16 +3,17 @@ import { theme } from "../../styles/theme";
 
 interface SelectTeamProps {
   TeamNameProp: string;
+  onClick?: () => void;
 }
 
-const SelectTeam = ({ TeamNameProp }: SelectTeamProps) => {
+const SelectTeam = ({ TeamNameProp, onClick }: SelectTeamProps) => {
   const playerImage = new URL(
     `../../assets/images/teamLogos/${TeamNameProp}.svg`,
     import.meta.url
   ).href;
 
   return (
-    <ActionGroup>
+    <ActionGroup onClick={onClick}>
       <TeamLogo src={playerImage} alt={TeamNameProp} />
       <TeamName>{TeamNameProp}</TeamName>
     </ActionGroup>

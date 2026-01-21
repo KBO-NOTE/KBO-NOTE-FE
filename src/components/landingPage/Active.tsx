@@ -4,13 +4,14 @@ import IcCheck from '../../assets/icons/check.svg';
 
 interface ActiveProps {
     playerName: string;
+    onClick?: () => void;
 }
 
-const Active = ({ playerName }: ActiveProps) => {
+const Active = ({ playerName, onClick }: ActiveProps) => {
     const playerImage = new URL(`../../assets/images/players/${playerName}.png`, import.meta.url).href;
 
     return (
-        <Container>
+        <Container onClick={onClick}>
         <IconWapper>
             <CheckIcon src={IcCheck} alt="selected" />
         </IconWapper>
@@ -31,6 +32,7 @@ const Container = styled.div`
     position: relative;
     overflow: visible;
     box-sizing: border-box;
+    cursor: pointer;
 `;
 
 const IconWapper = styled.div`

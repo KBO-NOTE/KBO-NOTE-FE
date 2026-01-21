@@ -26,11 +26,11 @@ const LogoSpan = styled.span`
   letter-spacing: 0.01em; /* 1% */
 `;
 
-// interface LogoProps {
-//   size?: 'lg' | 'md' | 'sm';
-// }
+interface LogoProps {
+  size?: "lg" | "md" | "sm";
+}
 
-const Logo = () => {
+const Logo = ({ size: _size = "lg" }: LogoProps) => {
   return (
     <LogoWrapper>
       <LogoText>

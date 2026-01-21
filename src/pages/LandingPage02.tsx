@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styled from "styled-components";
 import { theme } from "../styles/theme";
 import SelectTeamActive from "../components/landingPage/SelectTeamActive";
@@ -7,27 +8,78 @@ import PopularFilter from "../components/landingPage/Popular";
 import PlayerCardActive from "../components/landingPage/Active";
 import PlayerCardDefault from "../components/landingPage/Default";
 import Button from "../components/button/ButtonDefault";
+import { useNavigate } from "react-router-dom";
+
+{
+  /* 기본값 doosan */
+}
+const TEAMS = [
+  { id: "doosan", name: "두산 베어스" },
+  { id: "lotte", name: "롯데 자이언츠" },
+  { id: "samsung", name: "삼성 라이온즈" },
+];
+
+{
+  /* 기본값 1 */
+}
+const PLAYERS = [
+  { id: 1, name: "양의지" },
+  { id: 2, name: "양의지" },
+  { id: 3, name: "양의지" },
+];
 
 const LandingPage02 = () => {
+  const navigate = useNavigate();
+  const [selectedTeam, setSelectedTeam] = useState("doosan");
+  const [selectedPlayerId, setSelectedPlayerId] = useState(1);
+
   return (
     <PageContainer>
       <TitleWrapper>
         <Title>좋아하는 선수를 만나보세요!</Title>
       </TitleWrapper>
       <ActionGroup>
-        <IconWapper>
+        <IconWapper
+          onClick={() => navigate("/searchPage")}
+          style={{ cursor: "pointer" }}
+        >
           <Icon src={SearchIcon} alt="search icon" />
         </IconWapper>
-        <SelectTeamActive TeamNameProp="두산 베어스" />
-        <SelectTeamDefault TeamNameProp="롯데 자이언츠" />
+        {TEAMS.map((team) =>
+          team.id === selectedTeam ? (
+            <SelectTeamActive
+              key={team.id}
+              TeamNameProp={team.name}
+              onClick={() => setSelectedTeam(team.id)}
+            />
+          ) : (
+            <SelectTeamDefault
+              key={team.id}
+              TeamNameProp={team.name}
+              onClick={() => setSelectedTeam(team.id)}
+            />
+          )
+        )}
       </ActionGroup>
       <PopularWapper>
         <PopularFilter />
       </PopularWapper>
       <CardWapper>
-        <PlayerCardActive playerName="양의지" />
-        <PlayerCardDefault playerName="양의지" />
-        <PlayerCardDefault playerName="양의지" />
+        {PLAYERS.map((player) =>
+          player.id === selectedPlayerId ? (
+            <PlayerCardActive
+              key={player.id}
+              playerName={player.name}
+              onClick={() => setSelectedPlayerId(player.id)}
+            />
+          ) : (
+            <PlayerCardDefault
+              key={player.id}
+              playerName={player.name}
+              onClick={() => setSelectedPlayerId(player.id)}
+            />
+          )
+        )}
       </CardWapper>
       <ButtonWapper>
         <Button buttonText="선택 완료" />

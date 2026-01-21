@@ -3,11 +3,12 @@ import { theme } from '../../styles/theme';
 
 interface ButtonProps {
     buttonText: string;
+    onClick?: () => void;
 }
 
-const Button = ({ buttonText }: ButtonProps) => {
+const Button = ({ buttonText, onClick }: ButtonProps) => {
     return (
-        <Container>
+        <Container onClick={onClick}>
             {buttonText}
         </Container>
     );
@@ -15,7 +16,7 @@ const Button = ({ buttonText }: ButtonProps) => {
 
 const Container = styled.div`
     width: 100%;
-    min-width: 183px;
+    min-width: 362px;
     height: 56px;
     border-radius: ${theme.radius.full};
     padding: 16px 48px 16px 48px;

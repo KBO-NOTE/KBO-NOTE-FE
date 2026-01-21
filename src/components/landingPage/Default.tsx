@@ -3,16 +3,17 @@ import { theme } from "../../styles/theme";
 
 interface ActiveProps {
   playerName: string;
+  onClick?: () => void;
 }
 
-const Default = ({ playerName }: ActiveProps) => {
+const Default = ({ playerName, onClick }: ActiveProps) => {
   const playerImage = new URL(
     `../../assets/images/players/${playerName}.png`,
-    import.meta.url
+    import.meta.url,
   ).href;
 
   return (
-    <Container>
+    <Container onClick={onClick}>
       <ImageWrapper>
         <PlayerImage src={playerImage} alt={playerName} />
       </ImageWrapper>
@@ -28,6 +29,10 @@ const Container = styled.div`
   position: relative;
   overflow: visible;
   box-sizing: border-box;
+<<<<<<< HEAD
+  cursor: pointer;
+=======
+>>>>>>> origin/main
 `;
 
 const ImageWrapper = styled.div`
