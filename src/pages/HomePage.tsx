@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import { theme } from "../styles/theme";
+import HomePlayerCard from "../components/HomePage/HomePlayerCard";
 
 const HomePage = () => {
+  const playerNameList = ["양의지", "김기연", "양석준"];
   return (
     <Container>
       {/* Appbar */}
@@ -20,24 +22,14 @@ const HomePage = () => {
       </Appbar>
       {/* Player Section */}
       <PlayerSection>
-        <PlayerCard active>
-          <PlayerImage active>
-            <PlayerImageInner />
-          </PlayerImage>
-          <PlayerName active>양의지</PlayerName>
-        </PlayerCard>
-        <PlayerCard>
-          <PlayerImage>
-            <PlayerImageInner />
-          </PlayerImage>
-          <PlayerName>강승호</PlayerName>
-        </PlayerCard>
-        <PlayerCard>
-          <PlayerImage>
-            <PlayerImageInner />
-          </PlayerImage>
-          <PlayerName>김기연</PlayerName>
-        </PlayerCard>
+        {playerNameList.map((value, index) => (
+          <HomePlayerCard
+            playerName={value}
+            isActive={false}
+            imageUrl={""}
+            key={index}
+          />
+        ))}
         <PlayerAddCard>
           <PlusIcon />
         </PlayerAddCard>
@@ -268,41 +260,6 @@ const PlayerSection = styled.div`
   z-index: 50;
 `;
 
-const PlayerCard = styled.div<{ active?: boolean }>`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
-  cursor: pointer;
-`;
-
-const PlayerImage = styled.div<{ active?: boolean }>`
-  width: 72px;
-  height: 72px;
-  border-radius: 13.5px;
-  border: ${(props) =>
-    props.active ? `1.125px solid ${theme.colors.primary500}` : `1px solid ${theme.colors.light02}`};
-  box-shadow: ${(props) =>
-    props.active ? "0px 0px 6.75px 0px rgba(0, 44, 103, 0.5)" : "none"};
-  overflow: hidden;
-  position: relative;
-  background-color: #f9f9f9;
-`;
-
-const PlayerImageInner = styled.div`
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%);
-`;
-
-const PlayerName = styled.p<{ active?: boolean }>`
-  ${theme.typography.body03}
-  color: ${(props) => (props.active ? theme.colors.dark01 : theme.colors.dark04)};
-  margin: 0;
-  text-align: center;
-`;
-
 const PlayerAddCard = styled.button`
   width: 72px;
   height: 72px;
@@ -406,7 +363,8 @@ const Score = styled.p<{ primary?: boolean }>`
   font-weight: 400;
   line-height: 36px;
   letter-spacing: -2.24px;
-  color: ${(props) => (props.primary ? theme.colors.primary500 : theme.colors.dark01)};
+  color: ${(props) =>
+    props.primary ? theme.colors.primary500 : theme.colors.dark01};
   margin: 0;
 `;
 
@@ -460,7 +418,11 @@ const StatsCard = styled.div`
 `;
 
 const AchievementBadge = styled.div`
-  background: linear-gradient(90deg, ${theme.colors.primary600} 0%, #004996 100%);
+  background: linear-gradient(
+    90deg,
+    ${theme.colors.primary600} 0%,
+    #004996 100%
+  );
   border-radius: ${theme.radius.s};
   padding: 12px 16px;
   display: flex;
