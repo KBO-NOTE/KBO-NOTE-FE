@@ -1,4 +1,5 @@
-import styled from 'styled-components';
+import styled from "styled-components";
+import { theme } from "../styles/theme";
 
 interface PlayerCardProps {
   name: string;
@@ -6,7 +7,11 @@ interface PlayerCardProps {
   isSelected?: boolean;
 }
 
-const PlayerCard = ({ name, imageUrl, isSelected = false }: PlayerCardProps) => {
+const PlayerCard = ({
+  name,
+  imageUrl,
+  isSelected = false,
+}: PlayerCardProps) => {
   return (
     <CardContainer>
       <ImageWrapper $isSelected={isSelected}>
@@ -30,7 +35,7 @@ const ImageWrapper = styled.div<{ $isSelected: boolean }>`
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  border: 2px solid ${props => props.$isSelected ? '#007AFF' : '#E0E0E0'};
+  border: 2px solid ${(props) => (props.$isSelected ? "#007AFF" : "#E0E0E0")};
   overflow: visible;
 `;
 
@@ -45,7 +50,7 @@ const CheckBadge = styled.div`
   position: absolute;
   top: -2px;
   right: -2px;
-  background-color: #007AFF;
+  background-color: ${theme.colors.primary500};
   color: white;
   width: 18px;
   height: 18px;

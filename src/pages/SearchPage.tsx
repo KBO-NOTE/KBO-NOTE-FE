@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 import styled from "styled-components";
 import { theme } from "../styles/theme";
 import SearchIcon from "../assets/icons/search.svg";
@@ -7,11 +7,11 @@ import ButtonDefault from "../components/button/ButtonDefault";
 import ButtonGray from "../components/button/ButtonGray"; // 1. ButtonGray 임포트 추가
 import PlayerCardActive from "../components/landingPage/Active";
 import PlayerCardDefault from "../components/landingPage/Default";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const PLAYERS = [
   { id: 1, name: "양의지" },
-  { id: 2, name: "양의지" }
+  { id: 2, name: "양의지" },
 ];
 
 const SearchPage = () => {
@@ -32,7 +32,7 @@ const SearchPage = () => {
   return (
     <PageContainer>
       <HeaderFrame>
-        <IconWapper onClick={() => navigate(-1)} style={{ cursor: 'pointer' }}>
+        <IconWapper onClick={() => navigate(-1)} style={{ cursor: "pointer" }}>
           <Icon src={CloseIcon} alt="close icon" />
         </IconWapper>
         <TeamSearchWapper>
@@ -41,7 +41,7 @@ const SearchPage = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <IconWapper onClick={handleClear} style={{ cursor: 'pointer' }}>
+          <IconWapper onClick={handleClear} style={{ cursor: "pointer" }}>
             <Icon src={SearchIcon} alt="search icon" />
           </IconWapper>
         </TeamSearchWapper>
@@ -68,14 +68,9 @@ const SearchPage = () => {
 
       <ButtonWapper>
         {selectedPlayerId !== null ? (
-          <ButtonDefault
-            buttonText="선택 완료"
-            onClick={handleComplete}
-          />
+          <ButtonDefault buttonText="선택 완료" onClick={handleComplete} />
         ) : (
-          <ButtonGray
-            buttonText="선택 완료"
-          />
+          <ButtonGray buttonText="선택 완료" />
         )}
       </ButtonWapper>
     </PageContainer>
@@ -134,7 +129,7 @@ const IconWapper = styled.div`
   align-items: center;
   justify-content: center;
   img {
-    filter: brightness(0); 
+    filter: brightness(0);
   }
 `;
 

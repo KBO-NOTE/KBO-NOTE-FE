@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 import styled from "styled-components";
 import { theme } from "../styles/theme";
 import SelectTeamActive from "../components/landingPage/SelectTeamActive";
@@ -8,16 +8,20 @@ import PopularFilter from "../components/landingPage/Popular";
 import PlayerCardActive from "../components/landingPage/Active";
 import PlayerCardDefault from "../components/landingPage/Default";
 import Button from "../components/button/ButtonDefault";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
-{/* 기본값 doosan */ }
+{
+  /* 기본값 doosan */
+}
 const TEAMS = [
   { id: "doosan", name: "두산 베어스" },
   { id: "lotte", name: "롯데 자이언츠" },
   { id: "samsung", name: "삼성 라이온즈" },
 ];
 
-{/* 기본값 1 */ }
+{
+  /* 기본값 1 */
+}
 const PLAYERS = [
   { id: 1, name: "양의지" },
   { id: 2, name: "양의지" },
@@ -25,7 +29,6 @@ const PLAYERS = [
 ];
 
 const LandingPage02 = () => {
-
   const navigate = useNavigate();
   const [selectedTeam, setSelectedTeam] = useState("doosan");
   const [selectedPlayerId, setSelectedPlayerId] = useState(1);
@@ -37,11 +40,12 @@ const LandingPage02 = () => {
       </TitleWrapper>
       <ActionGroup>
         <IconWapper
-          onClick={() => navigate('/searchPage')}
-          style={{ cursor: 'pointer' }}>
+          onClick={() => navigate("/searchPage")}
+          style={{ cursor: "pointer" }}
+        >
           <Icon src={SearchIcon} alt="search icon" />
         </IconWapper>
-        {TEAMS.map((team) => (
+        {TEAMS.map((team) =>
           team.id === selectedTeam ? (
             <SelectTeamActive
               key={team.id}
@@ -55,13 +59,13 @@ const LandingPage02 = () => {
               onClick={() => setSelectedTeam(team.id)}
             />
           )
-        ))}
+        )}
       </ActionGroup>
       <PopularWapper>
         <PopularFilter />
       </PopularWapper>
       <CardWapper>
-        {PLAYERS.map((player) => (
+        {PLAYERS.map((player) =>
           player.id === selectedPlayerId ? (
             <PlayerCardActive
               key={player.id}
@@ -75,7 +79,7 @@ const LandingPage02 = () => {
               onClick={() => setSelectedPlayerId(player.id)}
             />
           )
-        ))}
+        )}
       </CardWapper>
       <ButtonWapper>
         <Button buttonText="선택 완료" />
