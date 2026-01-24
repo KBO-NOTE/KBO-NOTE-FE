@@ -54,7 +54,7 @@ const SearchPage = () => {
             <PlayerCardActive
               key={player.id}
               playerName={player.name}
-              onClick={() => setSelectedPlayerId(null)} 
+              onClick={() => setSelectedPlayerId(null)}
             />
           ) : (
             <PlayerCardDefault
@@ -68,13 +68,13 @@ const SearchPage = () => {
 
       <ButtonWapper>
         {selectedPlayerId !== null ? (
-          <ButtonDefault 
-            buttonText="선택 완료" 
-            onClick={handleComplete} 
+          <ButtonDefault
+            buttonText="선택 완료"
+            onClick={handleComplete}
           />
         ) : (
-          <ButtonGray 
-            buttonText="선택 완료" 
+          <ButtonGray
+            buttonText="선택 완료"
           />
         )}
       </ButtonWapper>
