@@ -5,6 +5,7 @@ import LandingPage01 from "./pages/LandingPage01";
 import LandingPage02 from "./pages/LandingPage02";
 import SearchPage from "./pages/SearchPage";
 import Test from "./pages/Test";
+import ErrorPage from "./pages/ErrorPage";
 
 const Router = () => {
   const routes = useRoutes([
@@ -31,6 +32,10 @@ const Router = () => {
         {
           path: "test",
           element: <Test />,
+        },
+        {
+          path: "errorPage",
+          element: <ErrorPage />,
         },
         // 다른 페이지도 여기에 추가 가능
       ],
