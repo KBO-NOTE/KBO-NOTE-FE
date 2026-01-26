@@ -26,7 +26,7 @@ const Router = () => {
           element: <LandingPage02 />,
         },
         {
-          path: "searchPage",
+          path: "searchpage",
           element: <SearchPage />,
         },
         {
@@ -34,7 +34,7 @@ const Router = () => {
           element: <Test />,
         },
         {
-          path: "errorPage",
+          path: "errorpage",
           element: <ErrorPage />,
         },
         // 다른 페이지도 여기에 추가 가능

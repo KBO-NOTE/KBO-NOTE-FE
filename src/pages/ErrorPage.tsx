@@ -6,31 +6,40 @@ import Button from "../components/button/ButtonDefault";
 const ErrorPage = () => {
   return (
     <PageContainer>
-      <img src={ErrorIcon} alt="ErrorIcon" />
-      <ErrorTextFrame>
-        <ErrorTitle>현재 요청을 처리할 수 없습니다.</ErrorTitle>
-        <ErrorSubtitle>잠시후에 다시 시도해 주세요.</ErrorSubtitle>
-      </ErrorTextFrame>
-      <ButtonWapper>
-        <Button buttonText="창닫기" />
-      </ButtonWapper>
+      <ErrorWrapper>
+        <img src={ErrorIcon} width={32} height={32} alt="ErrorIcon" />
+        <ErrorTextFrame>
+          <ErrorTitle>현재 요청을 처리할 수 없습니다.</ErrorTitle>
+          <ErrorSubtitle>잠시후에 다시 시도해 주세요.</ErrorSubtitle>
+        </ErrorTextFrame>
+        <ButtonWapper>
+          <Button buttonText="창닫기" />
+        </ButtonWapper>
+      </ErrorWrapper>
     </PageContainer>
   );
 };
 
 const PageContainer = styled.div`
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
   background-color: ${theme.colors.white};
   text-align: center;
   display: flex;
-  flex-direction: column;
+
   align-items: center;
-  padding: 200px 20px 70px 20px;
+  justify-content: center;
+
   border: 1px solid ${theme.colors.primary100};
   box-sizing: border-box;
 `;
 
+const ErrorWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+// padding: 200px 20px 70px 20px;
 const ErrorTextFrame = styled.div`
   margin-top: 6px;
   display: flex;
