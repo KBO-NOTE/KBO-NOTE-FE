@@ -29,3 +29,6 @@ tmpclaude-*
 
 # TypeScript build info
 *.tsbuildinfo
+
+*storybook.log
+storybook-static
