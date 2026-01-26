@@ -29,10 +29,6 @@ const Container = styled.div`
   position: relative;
   overflow: visible;
   box-sizing: border-box;
-<<<<<<< HEAD
-  cursor: pointer;
-=======
->>>>>>> origin/main
 `;
 
 const ImageWrapper = styled.div`

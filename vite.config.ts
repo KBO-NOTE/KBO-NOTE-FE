@@ -8,7 +8,11 @@ export default defineConfig({
     react(),
     checker({
       typescript: true, // TS 체크
-      eslint: { lintCommand: 'eslint "./src/**/*.{ts,tsx}"' }, // ESLint 체크
+
+      eslint: {
+        useFlatConfig: true,
+        lintCommand: 'eslint "./src/**/*.{ts,tsx}"',
+      }, // ESLint 체크
     }),
   ],
 });
