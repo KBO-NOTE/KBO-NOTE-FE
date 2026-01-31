@@ -1,44 +1,53 @@
+import { useState } from "react";
 import styled from "styled-components";
 import { theme } from "../styles/theme";
+import HomeAppBar from "../components/home/HomeAppBar";
+import HomePlayerCard from "../components/home/HomePlayerCard";
+import { useNavigate } from "react-router-dom";
+import HomeFeedItem from "../components/home/HomeFeedItem";
+
+const mockFeedData = [
+  {
+    id: 1,
+    imageSrc: "",
+    likeCount: 234,
+    commentCount: 7,
+    title: "'김동주→김현수→양의지' 곰 동굴에서 역대 3번째 타격왕 등장",
+  },
+  {
+    id: 2,
+    imageSrc: "",
+    likeCount: 372,
+    commentCount: 32,
+    title: "두목곰 양의지, 6년 만의 타격왕 복귀…'올해의 반전상' 품에 안다",
+  },
+];
 
 const HomePage = () => {
+  const testPlayerNameList = ["양의지", "김기연", "강승호"];
+  const navigate = useNavigate();
+  const [selectedPlayerIndex, setSelectedPlayerIndex] = useState<number | null>(
+    null,
+  );
+
+  const onPlayerAddClick = () => {
+    navigate("/landing2");
+  };
   return (
     <Container>
       {/* Appbar */}
-      <Appbar>
-        <AppbarContent>
-          <Logo>KBO NOTE</Logo>
-          <AppbarActions>
-            <IconButton>
-              <WriteIcon />
-            </IconButton>
-            <IconButton>
-              <SettingIcon />
-            </IconButton>
-          </AppbarActions>
-        </AppbarContent>
-      </Appbar>
+      <HomeAppBar />
       {/* Player Section */}
       <PlayerSection>
-        <PlayerCard active>
-          <PlayerImage active>
-            <PlayerImageInner />
-          </PlayerImage>
-          <PlayerName active>양의지</PlayerName>
-        </PlayerCard>
-        <PlayerCard>
-          <PlayerImage>
-            <PlayerImageInner />
-          </PlayerImage>
-          <PlayerName>강승호</PlayerName>
-        </PlayerCard>
-        <PlayerCard>
-          <PlayerImage>
-            <PlayerImageInner />
-          </PlayerImage>
-          <PlayerName>김기연</PlayerName>
-        </PlayerCard>
-        <PlayerAddCard>
+        {testPlayerNameList.map((value, index) => (
+          <HomePlayerCard
+            playerName={value}
+            key={index}
+            isActive={selectedPlayerIndex === index}
+            onClick={() => setSelectedPlayerIndex(index)}
+          />
+        ))}
+        <PlayerAddCard onClick={onPlayerAddClick}>
           <PlusIcon />
         </PlayerAddCard>
       </PlayerSection>
@@ -135,43 +144,15 @@ const HomePage = () => {
         <Section>
           <SectionTitle>KBO Feed</SectionTitle>
           <FeedList>
-            <FeedItem>
-              <FeedImage />
-              <FeedContent>
-                <FeedMeta>
-                  <FeedAction>
-                    <HeartIcon />
-                    <FeedCount>234</FeedCount>
-                  </FeedAction>
-                  <FeedAction>
-                    <ChatIcon />
-                    <FeedCount>7</FeedCount>
-                  </FeedAction>
-                </FeedMeta>
-                <FeedTitle>
-                  '김동주→김현수→양의지' 곰 동굴에서 역대 3번째 타격왕 등장
-                </FeedTitle>
-              </FeedContent>
-            </FeedItem>
-
-            <FeedItem>
-              <FeedImage />
-              <FeedContent>
-                <FeedMeta>
-                  <FeedAction>
-                    <HeartIcon />
-                    <FeedCount>372</FeedCount>
-                  </FeedAction>
-                  <FeedAction>
-                    <ChatIcon />
-                    <FeedCount>32</FeedCount>
-                  </FeedAction>
-                </FeedMeta>
-                <FeedTitle>
-                  두목곰 양의지, 6년 만의 타격왕 복귀…'올해의 반전상' 품에 안다
-                </FeedTitle>
-              </FeedContent>
-            </FeedItem>
+            {mockFeedData.map((feed) => (
+              <HomeFeedItem
+                key={feed.id}
+                imageSrc={feed.imageSrc}
+                likeCount={feed.likeCount}
+                commentCount={feed.commentCount}
+                title={feed.title}
+              />
+            ))}
           </FeedList>
         </Section>
       </ContentContainer>
@@ -189,70 +170,6 @@ const Container = styled.div`
   width: 100%;
 `;
 
-const Appbar = styled.div`
-  background-color: ${theme.colors.primary500};
-  height: 110px;
-  width: 100%;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-`;
-
-const AppbarContent = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 56px;
-  padding: 0 16px;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  box-sizing: border-box;
-`;
-
-const Logo = styled.h1`
-  font-family: "Airlash Raiders", sans-serif;
-  font-size: 20px;
-  color: ${theme.colors.white};
-  margin: 0;
-  font-weight: normal;
-  letter-spacing: 1.32px;
-`;
-
-const AppbarActions = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0;
-`;
-
-const IconButton = styled.button`
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-`;
-
-const WriteIcon = styled.div`
-  width: 24px;
-  height: 24px;
-  background-color: white;
-  mask: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z' fill='white'/%3E%3C/svg%3E")
-    center/contain no-repeat;
-`;
-
-const SettingIcon = styled.div`
-  width: 24px;
-  height: 24px;
-  background-color: white;
-  mask: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='12' cy='12' r='3' stroke='white' stroke-width='2'/%3E%3Cpath d='M12 1v6m0 6v10M23 12h-6m-4 0H1' stroke='white' stroke-width='2'/%3E%3C/svg%3E")
-    center/contain no-repeat;
-`;
-
 const PlayerSection = styled.div`
   position: absolute;
   top: 142px;
@@ -266,41 +183,6 @@ const PlayerSection = styled.div`
   overflow-x: auto;
   box-shadow: ${theme.shadows.m};
   z-index: 50;
-`;
-
-const PlayerCard = styled.div<{ active?: boolean }>`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
-  cursor: pointer;
-`;
-
-const PlayerImage = styled.div<{ active?: boolean }>`
-  width: 72px;
-  height: 72px;
-  border-radius: 13.5px;
-  border: ${(props) =>
-    props.active ? `1.125px solid ${theme.colors.primary500}` : `1px solid ${theme.colors.light02}`};
-  box-shadow: ${(props) =>
-    props.active ? "0px 0px 6.75px 0px rgba(0, 44, 103, 0.5)" : "none"};
-  overflow: hidden;
-  position: relative;
-  background-color: #f9f9f9;
-`;
-
-const PlayerImageInner = styled.div`
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%);
-`;
-
-const PlayerName = styled.p<{ active?: boolean }>`
-  ${theme.typography.body03}
-  color: ${(props) => (props.active ? theme.colors.dark01 : theme.colors.dark04)};
-  margin: 0;
-  text-align: center;
 `;
 
 const PlayerAddCard = styled.button`
@@ -406,7 +288,8 @@ const Score = styled.p<{ primary?: boolean }>`
   font-weight: 400;
   line-height: 36px;
   letter-spacing: -2.24px;
-  color: ${(props) => (props.primary ? theme.colors.primary500 : theme.colors.dark01)};
+  color: ${(props) =>
+    props.primary ? theme.colors.primary500 : theme.colors.dark01};
   margin: 0;
 `;
 
@@ -460,7 +343,11 @@ const StatsCard = styled.div`
 `;
 
 const AchievementBadge = styled.div`
-  background: linear-gradient(90deg, ${theme.colors.primary600} 0%, #004996 100%);
+  background: linear-gradient(
+    90deg,
+    ${theme.colors.primary600} 0%,
+    #004996 100%
+  );
   border-radius: ${theme.radius.s};
   padding: 12px 16px;
   display: flex;
@@ -543,68 +430,4 @@ const FeedList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
-`;
-
-const FeedItem = styled.a`
-  background: ${theme.colors.white};
-  border-radius: ${theme.radius.xl};
-  overflow: hidden;
-  box-shadow: ${theme.shadows.m};
-  text-decoration: none;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-`;
-
-const FeedImage = styled.div`
-  width: 100%;
-  height: 220px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-`;
-
-const FeedContent = styled.div`
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`;
-
-const FeedMeta = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-`;
-
-const FeedAction = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-`;
-
-const HeartIcon = styled.div`
-  width: 24px;
-  height: 24px;
-  background-color: ${theme.colors.dark01};
-  mask: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z' fill='%23111827'/%3E%3C/svg%3E")
-    center/contain no-repeat;
-`;
-
-const ChatIcon = styled.div`
-  width: 24px;
-  height: 24px;
-  background-color: ${theme.colors.dark01};
-  mask: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z' stroke='%23111827' stroke-width='2'/%3E%3C/svg%3E")
-    center/contain no-repeat;
-`;
-
-const FeedCount = styled.span`
-  ${theme.typography.body03}
-`;
-
-const FeedTitle = styled.p`
-  ${theme.typography.title}
-  margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 `;
