@@ -5,6 +5,7 @@ import HomeAppBar from "../components/home/HomeAppBar";
 import HomePlayerCard from "../components/home/HomePlayerCard";
 import { useNavigate } from "react-router-dom";
 import HomeFeedItem from "../components/home/HomeFeedItem";
+import { useGetFeeds } from "../api/feeds/queries";
 
 const mockFeedData = [
   {
@@ -26,6 +27,7 @@ const mockFeedData = [
 const HomePage = () => {
   const testPlayerNameList = ["양의지", "김기연", "강승호"];
   const navigate = useNavigate();
+
   const [selectedPlayerIndex, setSelectedPlayerIndex] = useState<number | null>(
     null,
   );

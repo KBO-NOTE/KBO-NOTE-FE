@@ -24,7 +24,6 @@ export default FullWidthLayout;
 
 const Container = styled.div`
   width: 100%;
-  max-width: 788px;
   margin: 0 auto;
   min-height: 100vh;
 `;

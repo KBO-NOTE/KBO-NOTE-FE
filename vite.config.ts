@@ -15,4 +15,13 @@ export default defineConfig({
       }, // ESLint 체크
     }),
   ],
+  server: {
+    port: 5173,
+    proxy: {
+      "/api": {
+        target: "http://203.252.131.18:4533",
+        changeOrigin: true,
+      },
+    },
+  },
 });

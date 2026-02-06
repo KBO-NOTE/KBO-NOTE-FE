@@ -58,7 +58,8 @@ const mockComments = [
 // Mock 피드 데이터
 const mockFeedDetail = {
   id: 1,
-  imageSrc: "https://www.figma.com/api/mcp/asset/375a9cfa-a008-47ec-88f6-d114b3063634",
+  imageSrc:
+    "https://www.figma.com/api/mcp/asset/375a9cfa-a008-47ec-88f6-d114b3063634",
   likeCount: 234,
   commentCount: 7,
   title: "'김동주→김현수→양의지' 곰 동굴에서 역대 3번째 타격왕 등장",
@@ -117,22 +118,24 @@ const FeedDetailPage = () => {
 
         {/* Comment Panel - Right Side */}
         <CommentPanel>
-          <CommentList>
-            {mockComments.map((comment) => (
-              <CommentItem key={comment.id}>
-                <Avatar>
-                  <PersonIcon />
-                </Avatar>
-                <CommentContent>
-                  <CommentHeader>
-                    <CommentUsername>{comment.username}</CommentUsername>
-                    <CommentText>{comment.content}</CommentText>
-                  </CommentHeader>
-                  <CommentTime>{comment.time}</CommentTime>
-                </CommentContent>
-              </CommentItem>
-            ))}
-          </CommentList>
+          <CommentListWrapper>
+            <CommentList>
+              {mockComments.map((comment) => (
+                <CommentItem key={comment.id}>
+                  <Avatar>
+                    <PersonIcon />
+                  </Avatar>
+                  <CommentContent>
+                    <CommentHeader>
+                      <CommentUsername>{comment.username}</CommentUsername>
+                      <CommentText>{comment.content}</CommentText>
+                    </CommentHeader>
+                    <CommentTime>{comment.time}</CommentTime>
+                  </CommentContent>
+                </CommentItem>
+              ))}
+            </CommentList>
+          </CommentListWrapper>
 
           <CommentInputArea>
             <LikeInfo>
@@ -167,19 +170,27 @@ export default FeedDetailPage;
 // Styled Components
 const Container = styled.div`
   background-color: ${theme.colors.white};
-  min-height: 100vh;
+  height: 100vh;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    height: auto;
+    min-height: 100vh;
+    overflow: auto;
+  }
 `;
 
 const AppBar = styled.header`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
   background: ${theme.colors.white};
   z-index: 100;
   height: 56px;
+  width: 100%;
+  max-width: 1034px;
 `;
 
 const AppBarContent = styled.div`
@@ -270,8 +281,7 @@ const SortText = styled.span`
 
 const MainContent = styled.main`
   display: flex;
-  padding-top: 56px;
-  min-height: 100vh;
+  justify-content: center;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -280,7 +290,7 @@ const MainContent = styled.main`
 
 const FeedContent = styled.div`
   flex: 1;
-  max-width: 394px;
+  max-width: 640px;
 
   @media (max-width: 768px) {
     max-width: 100%;
@@ -388,13 +398,25 @@ const CommentPanel = styled.aside`
   }
 `;
 
-const CommentList = styled.div`
+const CommentListWrapper = styled.div`
   flex: 1;
   overflow-y: auto;
+
+  @media (max-width: 768px) {
+    flex: none;
+    overflow-y: visible;
+  }
+`;
+
+const CommentList = styled.div`
   padding: 31px 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+
+  @media (max-width: 768px) {
+    padding-bottom: 150px;
+  }
 `;
 
 const CommentItem = styled.div`
@@ -463,12 +485,21 @@ const CommentTime = styled.span`
 `;
 
 const CommentInputArea = styled.div`
-  padding: 8px 16px 44px;
+  padding: 8px 16px;
   border-top: 1px solid ${theme.colors.light02};
   background: ${theme.colors.white};
   display: flex;
   flex-direction: column;
   gap: 12px;
+
+  @media (max-width: 768px) {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 100;
+  }
 `;
 
 const LikeInfo = styled.div`
