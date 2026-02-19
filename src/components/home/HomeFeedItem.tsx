@@ -2,20 +2,25 @@ import styled from "styled-components";
 import { theme } from "../../styles/theme";
 
 interface HomeFeedItemProps {
-  imageSrc?: string;
+  contentId: number;
+  imageSrc: string;
   likeCount: number;
   commentCount: number;
   title: string;
+  onClick: (id: number) => void;
 }
 
 const HomeFeedItem = ({
+  contentId,
   imageSrc,
   likeCount,
   commentCount,
   title,
+  onClick,
 }: HomeFeedItemProps) => {
+  console.log(imageSrc);
   return (
-    <FeedItemContainer>
+    <FeedItemContainer onClick={() => onClick(contentId)}>
       {imageSrc ? (
         <FeedImg src={imageSrc} alt={title} />
       ) : (

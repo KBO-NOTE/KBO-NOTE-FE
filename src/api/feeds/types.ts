@@ -2,7 +2,7 @@ export interface FeedItem {
   content_id: number;
   title: string;
   platform: string;
-  presentative_image_url: string;
+  representative_image_url: string;
   liked: boolean;
   like_count: number;
   comment_count: number;

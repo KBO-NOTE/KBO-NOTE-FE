@@ -1,39 +1,77 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { theme } from "../styles/theme";
 import HomeAppBar from "../components/home/HomeAppBar";
 import HomePlayerCard from "../components/home/HomePlayerCard";
 import { useNavigate } from "react-router-dom";
 import HomeFeedItem from "../components/home/HomeFeedItem";
+import { useGetPlayerStats } from "../api/stats/queries";
+import { useGetMatchSummary } from "../api/match/queries";
 import { useGetFeeds } from "../api/feeds/queries";
+import React from "react";
+import { useInView } from "react-intersection-observer";
 
-const mockFeedData = [
-  {
-    id: 1,
-    imageSrc: "",
-    likeCount: 234,
-    commentCount: 7,
-    title: "'김동주→김현수→양의지' 곰 동굴에서 역대 3번째 타격왕 등장",
-  },
-  {
-    id: 2,
-    imageSrc: "",
-    likeCount: 372,
-    commentCount: 32,
-    title: "두목곰 양의지, 6년 만의 타격왕 복귀…'올해의 반전상' 품에 안다",
-  },
-];
+// const mockFeedData = [
+//   {
+//     id: 1,
+//     imageSrc: "",
+//     likeCount: 234,
+//     commentCount: 7,
+//     title: "'김동주→김현수→양의지' 곰 동굴에서 역대 3번째 타격왕 등장",
+//   },
+//   {
+//     id: 2,
+//     imageSrc: "",
+//     likeCount: 372,
+//     commentCount: 32,
+//     title: "두목곰 양의지, 6년 만의 타격왕 복귀…'올해의 반전상' 품에 안다",
+//   },
+// ];
+interface PlayerListItem {
+  id: number;
+  name: string;
+  team?: string; // 팀 정보가 필요할 경우를 대비한 선택적 프로퍼티
+}
 
 const HomePage = () => {
-  const testPlayerNameList = ["양의지", "김기연", "강승호"];
-  const navigate = useNavigate();
+  const testPlayerList: PlayerListItem[] = [
+    { id: 251, name: "양의지" },
+    { id: 252, name: "김기연" },
+    { id: 253, name: "강승호" },
+  ];
+  const [selectedPlayerIndex, setSelectedPlayerIndex] = useState<number>(0);
 
-  const [selectedPlayerIndex, setSelectedPlayerIndex] = useState<number | null>(
-    null,
+  const { data: stats } = useGetPlayerStats(
+    testPlayerList[selectedPlayerIndex].id,
   );
+  const { data: matchSummary } = useGetMatchSummary(
+    testPlayerList[selectedPlayerIndex].id,
+  );
+  const {
+    data: feedList, // 전체 페이지 데이터 (pages 배열 포함)
+    fetchNextPage, // 다음 페이지를 불러오는 함수
+    hasNextPage, // 다음 페이지가 있는지 여부 (boolean)
+    isFetchingNextPage, // 다음 페이지를 불러오는 중인지 여부
+    status: _status, // 초기 로딩 상태 ('pending', 'error', 'success')
+    error: _error, // 에러 객체
+  } = useGetFeeds(testPlayerList[selectedPlayerIndex].id, 5); // 5개씩 가져오기
+
+  const { ref: feedEndRef, inView } = useInView();
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const navigate = useNavigate();
 
   const onPlayerAddClick = () => {
     navigate("/landing2");
+  };
+  const onFeedClick = (feedId: number) => {
+    console.log("dddd");
+    navigate(`/feed/${feedId}`);
   };
   return (
     <Container>
@@ -41,12 +79,12 @@ const HomePage = () => {
       <HomeAppBar />
       {/* Player Section */}
       <PlayerSection>
-        {testPlayerNameList.map((value, index) => (
+        {testPlayerList.map((value, _) => (
           <HomePlayerCard
-            playerName={value}
-            key={index}
-            isActive={selectedPlayerIndex === index}
-            onClick={() => setSelectedPlayerIndex(index)}
+            playerName={value.name}
+            key={value.id}
+            isActive={selectedPlayerIndex === value.id}
+            onClick={() => setSelectedPlayerIndex(value.id)}
           />
         ))}
         <PlayerAddCard onClick={onPlayerAddClick}>
@@ -62,14 +100,14 @@ const HomePage = () => {
             <MatchContent>
               <TeamContainer>
                 <TeamLogo />
-                <TeamName>한화이글스</TeamName>
+                <TeamName>{matchSummary?.match.home.team_name}</TeamName>
               </TeamContainer>
-              <Score>3</Score>
+              <Score>{matchSummary?.match.home_score}</Score>
               <ScoreDivider>:</ScoreDivider>
-              <Score primary>7</Score>
+              <Score primary>{matchSummary?.match.away_score}</Score>
               <TeamContainer>
                 <TeamLogo />
-                <TeamName>엘지트윈스</TeamName>
+                <TeamName>{matchSummary?.match.away.team_name}</TeamName>
               </TeamContainer>
             </MatchContent>
             <MatchInfo>
@@ -89,15 +127,15 @@ const HomePage = () => {
             <AchievementBadge>
               <TrophyIcon />
               <BadgeScroll>
-                <BadgeText>타율 1위</BadgeText>
+                <BadgeText>타율 {stats?.summary.batting_avg_rank}위</BadgeText>
                 <Dot />
-                <BadgeText>WAR 4위</BadgeText>
+                <BadgeText>WAR {stats?.summary.war_rank}위</BadgeText>
                 <Dot />
-                <BadgeText>안타 8위</BadgeText>
+                <BadgeText>안타 {stats?.summary.hits_rank}위</BadgeText>
                 <Dot />
-                <BadgeText>타점 10위</BadgeText>
+                <BadgeText>타점 {stats?.summary.rbi_rank}위</BadgeText>
                 <Dot />
-                <BadgeText>홈런 13위</BadgeText>
+                <BadgeText>홈런 {stats?.summary.home_run_rank}위</BadgeText>
               </BadgeScroll>
             </AchievementBadge>
 
@@ -105,37 +143,37 @@ const HomePage = () => {
               <StatsRow>
                 <StatItem>
                   <StatLabel>타율</StatLabel>
-                  <StatValue>0.337</StatValue>
+                  <StatValue>{stats?.metrics.batting_avg}</StatValue>
                 </StatItem>
                 <StatItem>
                   <StatLabel>홈런</StatLabel>
-                  <StatValue>20</StatValue>
+                  <StatValue>{stats?.metrics.home_runs}</StatValue>
                 </StatItem>
                 <StatItem>
                   <StatLabel>안타</StatLabel>
-                  <StatValue>153</StatValue>
+                  <StatValue>{stats?.metrics.hits}</StatValue>
                 </StatItem>
                 <StatItem>
                   <StatLabel>타점</StatLabel>
-                  <StatValue>89</StatValue>
+                  <StatValue>{stats?.metrics.rbi}</StatValue>
                 </StatItem>
               </StatsRow>
               <StatsRow>
                 <StatItem>
                   <StatLabel>득점</StatLabel>
-                  <StatValue>56</StatValue>
+                  <StatValue>{stats?.metrics.runs}</StatValue>
                 </StatItem>
                 <StatItem>
                   <StatLabel>도루</StatLabel>
-                  <StatValue>4</StatValue>
+                  <StatValue>{stats?.metrics.stolen_bases}</StatValue>
                 </StatItem>
                 <StatItem>
                   <StatLabel>출루율</StatLabel>
-                  <StatValue>0.406</StatValue>
+                  <StatValue>{stats?.metrics.on_base_percentage}</StatValue>
                 </StatItem>
                 <StatItem>
                   <StatLabel>OPS</StatLabel>
-                  <StatValue>0.939</StatValue>
+                  <StatValue>{stats?.metrics.ops}</StatValue>
                 </StatItem>
               </StatsRow>
             </StatsGrid>
@@ -146,15 +184,23 @@ const HomePage = () => {
         <Section>
           <SectionTitle>KBO Feed</SectionTitle>
           <FeedList>
-            {mockFeedData.map((feed) => (
-              <HomeFeedItem
-                key={feed.id}
-                imageSrc={feed.imageSrc}
-                likeCount={feed.likeCount}
-                commentCount={feed.commentCount}
-                title={feed.title}
-              />
+            {feedList?.pages.map((page, pageIndex) => (
+              <React.Fragment key={pageIndex}>
+                {page.items.map((feed) => (
+                  <HomeFeedItem
+                    key={feed.content_id}
+                    contentId={feed.content_id}
+                    imageSrc={feed.representative_image_url}
+                    likeCount={feed.like_count}
+                    commentCount={feed.comment_count}
+                    title={feed.title}
+                    onClick={() => onFeedClick(feed.content_id)}
+                  />
+                ))}
+              </React.Fragment>
             ))}
+            <div ref={feedEndRef} />
+            {isFetchingNextPage && <LoadingText>불러오는 중...</LoadingText>}
           </FeedList>
         </Section>
       </ContentContainer>
@@ -432,4 +478,12 @@ const FeedList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
+`;
+
+const LoadingText = styled.p`
+  ${theme.typography.body03}
+  color: ${theme.colors.dark03};
+  text-align: center;
+  margin: 0;
+  padding: 8px 0;
 `;
