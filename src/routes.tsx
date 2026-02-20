@@ -6,6 +6,8 @@ import LandingPage02 from "./pages/LandingPage02";
 import SearchPage from "./pages/SearchPage";
 import Test from "./pages/Test";
 import ErrorPage from "./pages/ErrorPage";
+import WritePage from "./pages/WritePage";
+import OAuthRedirect from "./pages/OAuthRedirect";
 
 const Router = () => {
   const routes = useRoutes([
@@ -19,6 +21,10 @@ const Router = () => {
         },
         {
           path: "landing1",
+          element: <LandingPage01 />,
+        },
+        {
+          path: "login",
           element: <LandingPage01 />,
         },
         {
@@ -36,6 +42,14 @@ const Router = () => {
         {
           path: "errorpage",
           element: <ErrorPage />,
+        },
+        {
+          path: "writepage",
+          element: <WritePage />,
+        },
+        {
+          path: "oauth2/redirect",
+          element: <OAuthRedirect />,
         },
         // 다른 페이지도 여기에 추가 가능
       ],

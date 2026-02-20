@@ -1,7 +1,13 @@
 import styled from "styled-components";
+import { logout } from "../api/auth";
 import { theme } from "../styles/theme";
 
 const HomePage = () => {
+  const handleLogout = async () => {
+    await logout();
+    window.location.href = "/login";
+  };
+
   return (
     <Container>
       {/* Appbar */}
@@ -9,6 +15,7 @@ const HomePage = () => {
         <AppbarContent>
           <Logo>KBO NOTE</Logo>
           <AppbarActions>
+            <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
             <IconButton>
               <WriteIcon />
             </IconButton>
@@ -223,6 +230,16 @@ const AppbarActions = styled.div`
   display: flex;
   align-items: center;
   gap: 0;
+`;
+
+const LogoutButton = styled.button`
+  ${theme.typography.caption01}
+  color: ${theme.colors.white};
+  background: transparent;
+  border: none;
+  padding: 0 8px;
+  height: 44px;
+  cursor: pointer;
 `;
 
 const IconButton = styled.button`

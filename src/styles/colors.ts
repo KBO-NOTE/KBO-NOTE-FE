@@ -26,4 +26,7 @@ export const colors = {
     //Background
     bg01: '#F4F6F9',
     bgBlue: '#0066D3',
+
+    //Status
+    error: '#E02424',
 };
