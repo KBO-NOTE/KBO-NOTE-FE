@@ -29,4 +29,3 @@ tmpclaude-*
 
 # TypeScript build info
 *.tsbuildinfo
-.env
