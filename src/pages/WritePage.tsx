@@ -46,6 +46,7 @@ const WritePage = () => {
 
   return (
     <Container>
+      {/* <Appbar /> */}
       <Post1 />
       <Content>
         {/* 3. 임포트한 아이콘 변수를 전달 */}
@@ -85,7 +86,6 @@ const Container = styled.div`
 
 const Content = styled.div`
   width: 100%;
-  max-width: 430px;
   padding: 28px;
   display: flex;
   flex-direction: column;
