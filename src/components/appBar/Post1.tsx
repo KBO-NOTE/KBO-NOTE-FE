@@ -21,7 +21,7 @@ const Container = styled.header`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  width: 100%;
+  width: 394px;
   height: 110px;
   background-color: ${theme.colors.primary500};
   box-sizing: border-box;
@@ -32,7 +32,7 @@ const InnerWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
+  width: 394px;
   height: 56px;
   padding: 0 16px;
   box-sizing: border-box;
