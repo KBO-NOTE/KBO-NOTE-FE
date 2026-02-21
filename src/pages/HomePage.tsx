@@ -1,93 +1,44 @@
-import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { theme } from "../styles/theme";
-import HomeAppBar from "../components/home/HomeAppBar";
-import HomePlayerCard from "../components/home/HomePlayerCard";
-import { useNavigate } from "react-router-dom";
-import HomeFeedItem from "../components/home/HomeFeedItem";
-import { useGetPlayerStats } from "../api/stats/queries";
-import { useGetMatchSummary } from "../api/match/queries";
-import { useGetFeeds } from "../api/feeds/queries";
-import React from "react";
-import { useInView } from "react-intersection-observer";
-
-// const mockFeedData = [
-//   {
-//     id: 1,
-//     imageSrc: "",
-//     likeCount: 234,
-//     commentCount: 7,
-//     title: "'김동주→김현수→양의지' 곰 동굴에서 역대 3번째 타격왕 등장",
-//   },
-//   {
-//     id: 2,
-//     imageSrc: "",
-//     likeCount: 372,
-//     commentCount: 32,
-//     title: "두목곰 양의지, 6년 만의 타격왕 복귀…'올해의 반전상' 품에 안다",
-//   },
-// ];
-interface PlayerListItem {
-  id: number;
-  name: string;
-  team?: string; // 팀 정보가 필요할 경우를 대비한 선택적 프로퍼티
-}
 
 const HomePage = () => {
-  const testPlayerList: PlayerListItem[] = [
-    { id: 251, name: "양의지" },
-    { id: 252, name: "김기연" },
-    { id: 253, name: "강승호" },
-  ];
-  const [selectedPlayerIndex, setSelectedPlayerIndex] = useState<number>(0);
-
-  const { data: stats } = useGetPlayerStats(
-    testPlayerList[selectedPlayerIndex].id,
-  );
-  const { data: matchSummary } = useGetMatchSummary(
-    testPlayerList[selectedPlayerIndex].id,
-  );
-  const {
-    data: feedList, // 전체 페이지 데이터 (pages 배열 포함)
-    fetchNextPage, // 다음 페이지를 불러오는 함수
-    hasNextPage, // 다음 페이지가 있는지 여부 (boolean)
-    isFetchingNextPage, // 다음 페이지를 불러오는 중인지 여부
-    status: _status, // 초기 로딩 상태 ('pending', 'error', 'success')
-    error: _error, // 에러 객체
-  } = useGetFeeds(testPlayerList[selectedPlayerIndex].id, 5); // 5개씩 가져오기
-
-  const { ref: feedEndRef, inView } = useInView();
-
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-  const navigate = useNavigate();
-
-  const onPlayerAddClick = () => {
-    navigate("/landing2");
-  };
-  const onFeedClick = (feedId: number) => {
-    console.log("dddd");
-    navigate(`/feed/${feedId}`);
-  };
   return (
     <Container>
       {/* Appbar */}
-      <HomeAppBar />
+      <Appbar>
+        <AppbarContent>
+          <Logo>KBO NOTE</Logo>
+          <AppbarActions>
+            <IconButton>
+              <WriteIcon />
+            </IconButton>
+            <IconButton>
+              <SettingIcon />
+            </IconButton>
+          </AppbarActions>
+        </AppbarContent>
+      </Appbar>
       {/* Player Section */}
       <PlayerSection>
-        {testPlayerList.map((value, _) => (
-          <HomePlayerCard
-            playerName={value.name}
-            key={value.id}
-            isActive={selectedPlayerIndex === value.id}
-            onClick={() => setSelectedPlayerIndex(value.id)}
-          />
-        ))}
-        <PlayerAddCard onClick={onPlayerAddClick}>
+        <PlayerCard active>
+          <PlayerImage active>
+            <PlayerImageInner />
+          </PlayerImage>
+          <PlayerName active>양의지</PlayerName>
+        </PlayerCard>
+        <PlayerCard>
+          <PlayerImage>
+            <PlayerImageInner />
+          </PlayerImage>
+          <PlayerName>강승호</PlayerName>
+        </PlayerCard>
+        <PlayerCard>
+          <PlayerImage>
+            <PlayerImageInner />
+          </PlayerImage>
+          <PlayerName>김기연</PlayerName>
+        </PlayerCard>
+        <PlayerAddCard>
           <PlusIcon />
         </PlayerAddCard>
       </PlayerSection>
@@ -100,14 +51,14 @@ const HomePage = () => {
             <MatchContent>
               <TeamContainer>
                 <TeamLogo />
-                <TeamName>{matchSummary?.match.home.team_name}</TeamName>
+                <TeamName>한화이글스</TeamName>
               </TeamContainer>
-              <Score>{matchSummary?.match.home_score}</Score>
+              <Score>3</Score>
               <ScoreDivider>:</ScoreDivider>
-              <Score primary>{matchSummary?.match.away_score}</Score>
+              <Score primary>7</Score>
               <TeamContainer>
                 <TeamLogo />
-                <TeamName>{matchSummary?.match.away.team_name}</TeamName>
+                <TeamName>엘지트윈스</TeamName>
               </TeamContainer>
             </MatchContent>
             <MatchInfo>
@@ -127,15 +78,15 @@ const HomePage = () => {
             <AchievementBadge>
               <TrophyIcon />
               <BadgeScroll>
-                <BadgeText>타율 {stats?.summary.batting_avg_rank}위</BadgeText>
+                <BadgeText>타율 1위</BadgeText>
                 <Dot />
-                <BadgeText>WAR {stats?.summary.war_rank}위</BadgeText>
+                <BadgeText>WAR 4위</BadgeText>
                 <Dot />
-                <BadgeText>안타 {stats?.summary.hits_rank}위</BadgeText>
+                <BadgeText>안타 8위</BadgeText>
                 <Dot />
-                <BadgeText>타점 {stats?.summary.rbi_rank}위</BadgeText>
+                <BadgeText>타점 10위</BadgeText>
                 <Dot />
-                <BadgeText>홈런 {stats?.summary.home_run_rank}위</BadgeText>
+                <BadgeText>홈런 13위</BadgeText>
               </BadgeScroll>
             </AchievementBadge>
 
@@ -143,37 +94,37 @@ const HomePage = () => {
               <StatsRow>
                 <StatItem>
                   <StatLabel>타율</StatLabel>
-                  <StatValue>{stats?.metrics.batting_avg}</StatValue>
+                  <StatValue>0.337</StatValue>
                 </StatItem>
                 <StatItem>
                   <StatLabel>홈런</StatLabel>
-                  <StatValue>{stats?.metrics.home_runs}</StatValue>
+                  <StatValue>20</StatValue>
                 </StatItem>
                 <StatItem>
                   <StatLabel>안타</StatLabel>
-                  <StatValue>{stats?.metrics.hits}</StatValue>
+                  <StatValue>153</StatValue>
                 </StatItem>
                 <StatItem>
                   <StatLabel>타점</StatLabel>
-                  <StatValue>{stats?.metrics.rbi}</StatValue>
+                  <StatValue>89</StatValue>
                 </StatItem>
               </StatsRow>
               <StatsRow>
                 <StatItem>
                   <StatLabel>득점</StatLabel>
-                  <StatValue>{stats?.metrics.runs}</StatValue>
+                  <StatValue>56</StatValue>
                 </StatItem>
                 <StatItem>
                   <StatLabel>도루</StatLabel>
-                  <StatValue>{stats?.metrics.stolen_bases}</StatValue>
+                  <StatValue>4</StatValue>
                 </StatItem>
                 <StatItem>
                   <StatLabel>출루율</StatLabel>
-                  <StatValue>{stats?.metrics.on_base_percentage}</StatValue>
+                  <StatValue>0.406</StatValue>
                 </StatItem>
                 <StatItem>
                   <StatLabel>OPS</StatLabel>
-                  <StatValue>{stats?.metrics.ops}</StatValue>
+                  <StatValue>0.939</StatValue>
                 </StatItem>
               </StatsRow>
             </StatsGrid>
@@ -184,23 +135,43 @@ const HomePage = () => {
         <Section>
           <SectionTitle>KBO Feed</SectionTitle>
           <FeedList>
-            {feedList?.pages.map((page, pageIndex) => (
-              <React.Fragment key={pageIndex}>
-                {page.items.map((feed) => (
-                  <HomeFeedItem
-                    key={feed.content_id}
-                    contentId={feed.content_id}
-                    imageSrc={feed.representative_image_url}
-                    likeCount={feed.like_count}
-                    commentCount={feed.comment_count}
-                    title={feed.title}
-                    onClick={() => onFeedClick(feed.content_id)}
-                  />
-                ))}
-              </React.Fragment>
-            ))}
-            <div ref={feedEndRef} />
-            {isFetchingNextPage && <LoadingText>불러오는 중...</LoadingText>}
+            <FeedItem>
+              <FeedImage />
+              <FeedContent>
+                <FeedMeta>
+                  <FeedAction>
+                    <HeartIcon />
+                    <FeedCount>234</FeedCount>
+                  </FeedAction>
+                  <FeedAction>
+                    <ChatIcon />
+                    <FeedCount>7</FeedCount>
+                  </FeedAction>
+                </FeedMeta>
+                <FeedTitle>
+                  '김동주→김현수→양의지' 곰 동굴에서 역대 3번째 타격왕 등장
+                </FeedTitle>
+              </FeedContent>
+            </FeedItem>
+
+            <FeedItem>
+              <FeedImage />
+              <FeedContent>
+                <FeedMeta>
+                  <FeedAction>
+                    <HeartIcon />
+                    <FeedCount>372</FeedCount>
+                  </FeedAction>
+                  <FeedAction>
+                    <ChatIcon />
+                    <FeedCount>32</FeedCount>
+                  </FeedAction>
+                </FeedMeta>
+                <FeedTitle>
+                  두목곰 양의지, 6년 만의 타격왕 복귀…'올해의 반전상' 품에 안다
+                </FeedTitle>
+              </FeedContent>
+            </FeedItem>
           </FeedList>
         </Section>
       </ContentContainer>
@@ -218,6 +189,70 @@ const Container = styled.div`
   width: 100%;
 `;
 
+const Appbar = styled.div`
+  background-color: ${theme.colors.primary500};
+  height: 110px;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+`;
+
+const AppbarContent = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding: 0 16px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  box-sizing: border-box;
+`;
+
+const Logo = styled.h1`
+  font-family: "Airlash Raiders", sans-serif;
+  font-size: 20px;
+  color: ${theme.colors.white};
+  margin: 0;
+  font-weight: normal;
+  letter-spacing: 1.32px;
+`;
+
+const AppbarActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0;
+`;
+
+const IconButton = styled.button`
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+`;
+
+const WriteIcon = styled.div`
+  width: 24px;
+  height: 24px;
+  background-color: white;
+  mask: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z' fill='white'/%3E%3C/svg%3E")
+    center/contain no-repeat;
+`;
+
+const SettingIcon = styled.div`
+  width: 24px;
+  height: 24px;
+  background-color: white;
+  mask: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='12' cy='12' r='3' stroke='white' stroke-width='2'/%3E%3Cpath d='M12 1v6m0 6v10M23 12h-6m-4 0H1' stroke='white' stroke-width='2'/%3E%3C/svg%3E")
+    center/contain no-repeat;
+`;
+
 const PlayerSection = styled.div`
   position: absolute;
   top: 142px;
@@ -231,6 +266,44 @@ const PlayerSection = styled.div`
   overflow-x: auto;
   box-shadow: ${theme.shadows.m};
   z-index: 50;
+`;
+
+const PlayerCard = styled.div<{ active?: boolean }>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  cursor: pointer;
+`;
+
+const PlayerImage = styled.div<{ active?: boolean }>`
+  width: 72px;
+  height: 72px;
+  border-radius: 13.5px;
+  border: ${(props) =>
+    props.active
+      ? `1.125px solid ${theme.colors.primary500}`
+      : `1px solid ${theme.colors.light02}`};
+  box-shadow: ${(props) =>
+    props.active ? "0px 0px 6.75px 0px rgba(0, 44, 103, 0.5)" : "none"};
+  overflow: hidden;
+  position: relative;
+  background-color: #f9f9f9;
+`;
+
+const PlayerImageInner = styled.div`
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%);
+`;
+
+const PlayerName = styled.p<{ active?: boolean }>`
+  ${theme.typography.body03}
+  color: ${(props) =>
+    props.active ? theme.colors.dark01 : theme.colors.dark04};
+  margin: 0;
+  text-align: center;
 `;
 
 const PlayerAddCard = styled.button`
@@ -480,10 +553,66 @@ const FeedList = styled.div`
   gap: 24px;
 `;
 
-const LoadingText = styled.p`
+const FeedItem = styled.a`
+  background: ${theme.colors.white};
+  border-radius: ${theme.radius.xl};
+  overflow: hidden;
+  box-shadow: ${theme.shadows.m};
+  text-decoration: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+`;
+
+const FeedImage = styled.div`
+  width: 100%;
+  height: 220px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+`;
+
+const FeedContent = styled.div`
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+const FeedMeta = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
+const FeedAction = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
+
+const HeartIcon = styled.div`
+  width: 24px;
+  height: 24px;
+  background-color: ${theme.colors.dark01};
+  mask: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z' fill='%23111827'/%3E%3C/svg%3E")
+    center/contain no-repeat;
+`;
+
+const ChatIcon = styled.div`
+  width: 24px;
+  height: 24px;
+  background-color: ${theme.colors.dark01};
+  mask: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z' stroke='%23111827' stroke-width='2'/%3E%3C/svg%3E")
+    center/contain no-repeat;
+`;
+
+const FeedCount = styled.span`
   ${theme.typography.body03}
-  color: ${theme.colors.dark03};
-  text-align: center;
+`;
+
+const FeedTitle = styled.p`
+  ${theme.typography.title}
   margin: 0;
-  padding: 8px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
