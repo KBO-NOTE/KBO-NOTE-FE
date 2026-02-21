@@ -282,7 +282,9 @@ const PlayerImage = styled.div<{ active?: boolean }>`
   height: 72px;
   border-radius: 13.5px;
   border: ${(props) =>
-    props.active ? `1.125px solid ${theme.colors.primary500}` : `1px solid ${theme.colors.light02}`};
+    props.active
+      ? `1.125px solid ${theme.colors.primary500}`
+      : `1px solid ${theme.colors.light02}`};
   box-shadow: ${(props) =>
     props.active ? "0px 0px 6.75px 0px rgba(0, 44, 103, 0.5)" : "none"};
   overflow: hidden;
@@ -298,7 +300,8 @@ const PlayerImageInner = styled.div`
 
 const PlayerName = styled.p<{ active?: boolean }>`
   ${theme.typography.body03}
-  color: ${(props) => (props.active ? theme.colors.dark01 : theme.colors.dark04)};
+  color: ${(props) =>
+    props.active ? theme.colors.dark01 : theme.colors.dark04};
   margin: 0;
   text-align: center;
 `;
@@ -406,7 +409,8 @@ const Score = styled.p<{ primary?: boolean }>`
   font-weight: 400;
   line-height: 36px;
   letter-spacing: -2.24px;
-  color: ${(props) => (props.primary ? theme.colors.primary500 : theme.colors.dark01)};
+  color: ${(props) =>
+    props.primary ? theme.colors.primary500 : theme.colors.dark01};
   margin: 0;
 `;
 
@@ -460,7 +464,11 @@ const StatsCard = styled.div`
 `;
 
 const AchievementBadge = styled.div`
-  background: linear-gradient(90deg, ${theme.colors.primary600} 0%, #004996 100%);
+  background: linear-gradient(
+    90deg,
+    ${theme.colors.primary600} 0%,
+    #004996 100%
+  );
   border-radius: ${theme.radius.s};
   padding: 12px 16px;
   display: flex;
