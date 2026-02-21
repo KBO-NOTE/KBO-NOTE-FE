@@ -58,7 +58,7 @@ const LandingPage02 = () => {
               TeamNameProp={team.name}
               onClick={() => setSelectedTeam(team.id)}
             />
-          )
+          ),
         )}
       </ActionGroup>
       <PopularWapper>
@@ -78,7 +78,7 @@ const LandingPage02 = () => {
               playerName={player.name}
               onClick={() => setSelectedPlayerId(player.id)}
             />
-          )
+          ),
         )}
       </CardWapper>
       <ButtonWapper>
