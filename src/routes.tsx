@@ -10,7 +10,6 @@ import WritePage from "./pages/WritePage";
 import OAuthRedirect from "./pages/OAuthRedirect";
 import FeedDetailPage from "./pages/FeedDetailPage";
 import FullWidthLayout from "./layouts/FullWidthLayout";
-import WritePage from "./pages/WritePage";
 
 const Router = () => {
   const routes = useRoutes([
