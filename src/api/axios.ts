@@ -2,7 +2,7 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { refreshAccessToken } from "./auth";
 
 const instance = axios.create({
-  baseURL: "http://203.252.131.18:4530",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
 instance.interceptors.request.use((config) => {

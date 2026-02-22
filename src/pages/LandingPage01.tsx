@@ -1,16 +1,25 @@
 import styled from "styled-components";
-import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { theme } from "../styles/theme";
 import MainLogo from "../assets/logo/main01.svg";
 import Google from "../assets/icons/Google.svg";
 import Kakao from "../assets/icons/Kakao.svg";
 
-const BACKEND_URL = "http://203.252.131.18:4530";
-const GOOGLE_URL = "http://203.252.131.18.nip.io:4530";
+const BACKEND_URL = import.meta.env.VITE_API_BASE_URL;
+const GOOGLE_URL = import.meta.env.VITE_GOOGLE_OAUTH_BASE_URL;
 
 const LandingPage01 = () => {
+  const navigate = useNavigate();
   const { search } = useLocation();
   const hasError = new URLSearchParams(search).get("error") === "true";
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      navigate("/", { replace: true });
+    }
+  }, [navigate]);
 
   const handleGoogleLogin = () => {
     window.location.href = `${GOOGLE_URL}/oauth2/authorization/google`;

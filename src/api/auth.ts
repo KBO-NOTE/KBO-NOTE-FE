@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://203.252.131.18:4530";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const refreshAccessToken = async () => {
   const refreshToken = localStorage.getItem("refreshToken");

@@ -9,7 +9,7 @@ interface SelectTeamProps {
 const SelectTeam = ({ TeamNameProp, onClick }: SelectTeamProps) => {
   const playerImage = new URL(
     `../../assets/images/teamLogos/${TeamNameProp}.svg`,
-    import.meta.url
+    import.meta.url,
   ).href;
 
   return (
@@ -23,6 +23,7 @@ const SelectTeam = ({ TeamNameProp, onClick }: SelectTeamProps) => {
 const ActionGroup = styled.div`
   width: fit-content;
   min-width: 118px;
+  white-space: nowrap;
   height: 44px;
   gap: 4px;
   border-radius: ${theme.radius.full};
