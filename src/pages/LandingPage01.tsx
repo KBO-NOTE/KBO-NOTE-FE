@@ -1,21 +1,46 @@
 import styled from "styled-components";
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { theme } from "../styles/theme";
 import MainLogo from "../assets/logo/main01.svg";
 import Google from "../assets/icons/Google.svg";
 import Kakao from "../assets/icons/Kakao.svg";
 
+const BACKEND_URL = import.meta.env.VITE_API_BASE_URL;
+const GOOGLE_URL = import.meta.env.VITE_GOOGLE_OAUTH_BASE_URL;
+
 const LandingPage01 = () => {
+  const navigate = useNavigate();
+  const { search } = useLocation();
+  const hasError = new URLSearchParams(search).get("error") === "true";
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      navigate("/", { replace: true });
+    }
+  }, [navigate]);
+
+  const handleGoogleLogin = () => {
+    window.location.href = `${GOOGLE_URL}/oauth2/authorization/google`;
+  };
+
+  const handleKakaoLogin = () => {
+    window.location.href = `${BACKEND_URL}/oauth2/authorization/kakao`;
+  };
+
   return (
     <PageContainer>
       <LogoWapper>
         <SubTitle>선수의 오늘, 슬기로운 크보생활</SubTitle>
         <Logo src={MainLogo} alt="KBO NOTE Logo" />
       </LogoWapper>
-      <GoogleLogin>
+      {hasError && <ErrorText>로그인에 실패했습니다. 다시 시도해주세요.</ErrorText>}
+      <GoogleLogin onClick={handleGoogleLogin}>
         <img src={Google} alt="Google Logo" />
         <Login>구글 계정 로그인</Login>
       </GoogleLogin>
-      <KakaoLogin>
+      <KakaoLogin onClick={handleKakaoLogin}>
         <img src={Kakao} alt="Kakao Logo" />
         <Login>카카오 계정 로그인</Login>
       </KakaoLogin>
@@ -94,6 +119,12 @@ const KakaoLogin = styled.button`
 const Login = styled.div`
   ${theme.typography.button01}
   color: ${theme.colors.black};
+`;
+
+const ErrorText = styled.p`
+  ${theme.typography.body03}
+  color: ${theme.colors.error};
+  margin: 0 0 16px 0;
 `;
 
 export default LandingPage01;

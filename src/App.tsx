@@ -23,7 +23,8 @@ function App() {
 }
 
 const MainContainer = styled.div`
-  width: 640px;
+  width: 100%;
+  max-width: 640px;
   margin: 0 auto;
   height: 100vh;
 `;
