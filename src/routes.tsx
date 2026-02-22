@@ -8,6 +8,9 @@ import Test from "./pages/Test";
 import ErrorPage from "./pages/ErrorPage";
 import WritePage from "./pages/WritePage";
 import OAuthRedirect from "./pages/OAuthRedirect";
+import FeedDetailPage from "./pages/FeedDetailPage";
+import FullWidthLayout from "./layouts/FullWidthLayout";
+import WritePage from "./pages/WritePage";
 
 const Router = () => {
   const routes = useRoutes([
@@ -52,6 +55,16 @@ const Router = () => {
           element: <OAuthRedirect />,
         },
         // 다른 페이지도 여기에 추가 가능
+      ],
+    },
+    // 전체 너비 레이아웃 사용 페이지
+    {
+      element: <FullWidthLayout />,
+      children: [
+        {
+          path: "feed/:id",
+          element: <FeedDetailPage />,
+        },
       ],
     },
   ]);

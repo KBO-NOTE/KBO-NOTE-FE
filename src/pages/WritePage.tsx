@@ -1,8 +1,9 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { theme } from "../styles/theme";
 import Post1 from "../components/appBar/Post1";
 
+// 1. 아이콘 이미지 임포트
 import LinkIcon from "../assets/icons/link.svg";
 import YoutubeIcon from "../assets/icons/youtube.svg";
 import PhotoIcon from "../assets/icons/photo.svg";
@@ -12,78 +13,31 @@ type PostType = "link" | "youtube" | "photo" | null;
 const WritePage = () => {
   const [selectedType, setSelectedType] = useState<PostType>(null);
   const [linkText, setLinkText] = useState("");
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const renderInputBox = (
     type: PostType,
     title: string,
-    iconSrc: string,
+    iconSrc: string, // icon 문자열 대신 이미지 경로를 받습니다.
     placeholder: string,
   ) => {
     const isSelected = selectedType === type;
 
     return (
-      <Card
-        onClick={() => {
-          setSelectedType(type);
-          if (type === "photo" && !imagePreview) fileInputRef.current?.click();
-        }}
-        $isSelected={isSelected}
-      >
+      <Card onClick={() => setSelectedType(type)} $isSelected={isSelected}>
         <CardHeader>
+          {/* 2. 기존 IconSpan 대신 IconImage 사용 */}
           <IconImage src={iconSrc} alt={title} />
           <CardTitle $isSelected={isSelected}>{title}</CardTitle>
         </CardHeader>
 
         {isSelected && (
           <InputWrapper onClick={(e) => e.stopPropagation()}>
-            {type === "photo" ? (
-              <PhotoUploadSection>
-                <input
-                  type="file"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  ref={fileInputRef}
-                  onChange={handleImageChange}
-                />
-                {imagePreview ? (
-                  <PreviewWrapper>
-                    <PreviewImage src={imagePreview} />
-                    <ChangePhotoButton
-                      onClick={() => fileInputRef.current?.click()}
-                    >
-                      사진 변경
-                    </ChangePhotoButton>
-                  </PreviewWrapper>
-                ) : (
-                  <UploadPlaceholder
-                    onClick={() => fileInputRef.current?.click()}
-                  >
-                    클릭하여 사진을 업로드하세요
-                  </UploadPlaceholder>
-                )}
-              </PhotoUploadSection>
-            ) : (
-              <StyledInput
-                placeholder={placeholder}
-                value={linkText}
-                onChange={(e) => setLinkText(e.target.value)}
-                autoFocus
-              />
-            )}
+            <StyledInput
+              placeholder={placeholder}
+              value={linkText}
+              onChange={(e) => setLinkText(e.target.value)}
+              autoFocus
+            />
           </InputWrapper>
         )}
       </Card>
@@ -92,8 +46,10 @@ const WritePage = () => {
 
   return (
     <Container>
+      {/* <Appbar /> */}
       <Post1 />
       <Content>
+        {/* 3. 임포트한 아이콘 변수를 전달 */}
         {renderInputBox(
           "link",
           "기사 링크 게시",
@@ -117,6 +73,8 @@ const WritePage = () => {
   );
 };
 
+// --- 스타일 컴포넌트 ---
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -128,7 +86,6 @@ const Container = styled.div`
 
 const Content = styled.div`
   width: 100%;
-  max-width: 430px;
   padding: 28px;
   display: flex;
   flex-direction: column;
@@ -157,6 +114,7 @@ const CardHeader = styled.div`
   align-items: center;
 `;
 
+// 4. 아이콘 이미지 스타일 추가
 const IconImage = styled.img`
   width: 24px;
   height: 24px;
@@ -184,48 +142,6 @@ const StyledInput = styled.input`
   outline: none;
   font-size: 14px;
   box-sizing: border-box;
-`;
-
-const PhotoUploadSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-`;
-
-const PreviewWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-`;
-
-const PreviewImage = styled.img`
-  width: 100%;
-  max-height: 200px;
-  border-radius: 8px;
-  object-fit: cover;
-`;
-
-const UploadPlaceholder = styled.div`
-  width: 100%;
-  padding: 20px;
-  border: 1px dashed #ccc;
-  border-radius: 8px;
-  text-align: center;
-  font-size: 14px;
-  color: #666;
-`;
-
-const ChangePhotoButton = styled.button`
-  background: none;
-  border: 1px solid ${theme.colors.primary400};
-  color: ${theme.colors.primary400};
-  padding: 4px 12px;
-  border-radius: 4px;
-  font-size: 12px;
-  cursor: pointer;
 `;
 
 export default WritePage;
