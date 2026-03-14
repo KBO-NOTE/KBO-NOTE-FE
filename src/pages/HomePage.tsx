@@ -8,53 +8,32 @@ import HomeFeedItem from "../components/home/HomeFeedItem";
 import { useGetPlayerStats } from "../api/stats/queries";
 import { useGetMatchSummary } from "../api/match/queries";
 import { useGetFeeds } from "../api/feeds/queries";
+import { useGetFavoritePlayers } from "../api/favorites/queries";
 import React from "react";
 import { useInView } from "react-intersection-observer";
 
-// const mockFeedData = [
-//   {
-//     id: 1,
-//     imageSrc: "",
-//     likeCount: 234,
-//     commentCount: 7,
-//     title: "'김동주→김현수→양의지' 곰 동굴에서 역대 3번째 타격왕 등장",
-//   },
-//   {
-//     id: 2,
-//     imageSrc: "",
-//     likeCount: 372,
-//     commentCount: 32,
-//     title: "두목곰 양의지, 6년 만의 타격왕 복귀…'올해의 반전상' 품에 안다",
-//   },
-// ];
-interface PlayerListItem {
-  id: number;
-  name: string;
-  team?: string; // 팀 정보가 필요할 경우를 대비한 선택적 프로퍼티
-}
-
 const HomePage = () => {
-  const testPlayerList: PlayerListItem[] = [
-    { id: 251, name: "양의지" },
-    { id: 252, name: "김기연" },
-    { id: 253, name: "강승호" },
-  ];
-  const [selectedPlayerIndex, setSelectedPlayerIndex] = useState<number>(0);
+  const { data: favorites } = useGetFavoritePlayers();
+  const playerIds = favorites?.playerIds ?? [];
 
-  const { data: stats } = useGetPlayerStats(
-    testPlayerList[selectedPlayerIndex].id,
-  );
-  const { data: matchSummary } = useGetMatchSummary(
-    testPlayerList[selectedPlayerIndex].id,
-  );
+  const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (playerIds.length > 0 && selectedPlayerId === null) {
+      setSelectedPlayerId(playerIds[0]);
+    }
+  }, [playerIds, selectedPlayerId]);
+
+  const { data: stats } = useGetPlayerStats(selectedPlayerId ?? 0);
+  const { data: matchSummary } = useGetMatchSummary(selectedPlayerId ?? 0);
   const {
-    data: feedList, // 전체 페이지 데이터 (pages 배열 포함)
-    fetchNextPage, // 다음 페이지를 불러오는 함수
-    hasNextPage, // 다음 페이지가 있는지 여부 (boolean)
-    isFetchingNextPage, // 다음 페이지를 불러오는 중인지 여부
-    status: _status, // 초기 로딩 상태 ('pending', 'error', 'success')
-    error: _error, // 에러 객체
-  } = useGetFeeds(testPlayerList[selectedPlayerIndex].id, 5); // 5개씩 가져오기
+    data: feedList,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status: _status,
+    error: _error,
+  } = useGetFeeds(selectedPlayerId ?? 0, 5);
 
   const { ref: feedEndRef, inView } = useInView();
 
@@ -70,7 +49,6 @@ const HomePage = () => {
     navigate("/landing2");
   };
   const onFeedClick = (feedId: number) => {
-    console.log("dddd");
     navigate(`/feed/${feedId}`);
   };
   return (
@@ -79,12 +57,12 @@ const HomePage = () => {
       <HomeAppBar />
       {/* Player Section */}
       <PlayerSection>
-        {testPlayerList.map((value, _) => (
+        {playerIds.map((playerId) => (
           <HomePlayerCard
-            playerName={value.name}
-            key={value.id}
-            isActive={selectedPlayerIndex === value.id}
-            onClick={() => setSelectedPlayerIndex(value.id)}
+            playerName={String(playerId)}
+            key={playerId}
+            isActive={selectedPlayerId === playerId}
+            onClick={() => setSelectedPlayerId(playerId)}
           />
         ))}
         <PlayerAddCard onClick={onPlayerAddClick}>
