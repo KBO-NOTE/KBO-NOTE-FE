@@ -12,11 +12,7 @@ export const useGetMatchSummary = (playerId: number) => {
     queryFn: async () => {
       // API 경로가 /api/match/{player_id} 형태이면서
       // 쿼리 파라미터 ?player_id=...도 함께 요구하는 경우를 모두 고려한 작성법입니다.
-      return api
-        .get(`match/${playerId}`, {
-          searchParams: { player_id: String(playerId) },
-        })
-        .json<MatchSummaryResponse>();
+      return api.get(`match/${playerId}`).json<MatchSummaryResponse>();
     },
     // playerId가 유효할 때만 쿼리를 실행하도록 설정
     enabled: !!playerId,

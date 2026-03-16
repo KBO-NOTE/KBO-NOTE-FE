@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { theme } from "../styles/theme";
 import HomeAppBar from "../components/home/HomeAppBar";
@@ -14,26 +14,27 @@ import { useInView } from "react-intersection-observer";
 
 const HomePage = () => {
   const { data: favorites } = useGetFavoritePlayers();
-  const playerIds = favorites?.playerIds ?? [];
+  const playerIds = useMemo(() => favorites?.playerIds ?? [], [favorites]);
 
   const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null);
+  //TODO : 로직 살리기
+  // const activePlayerId = selectedPlayerId ?? playerIds[0] ?? null;
+  const activePlayerId = 54400;
 
-  useEffect(() => {
-    if (playerIds.length > 0 && selectedPlayerId === null) {
-      setSelectedPlayerId(playerIds[0]);
-    }
-  }, [playerIds, selectedPlayerId]);
+  // useEffect(() => {
+  //   if (playerIds.length > 0 && selectedPlayerId === null) {
+  //     setSelectedPlayerId(playerIds[0]);
+  //   }
+  // }, [playerIds, selectedPlayerId]);
 
-  const { data: stats } = useGetPlayerStats(selectedPlayerId ?? 0);
-  const { data: matchSummary } = useGetMatchSummary(selectedPlayerId ?? 0);
+  const { data: stats } = useGetPlayerStats(activePlayerId ?? 0);
+  const { data: matchSummary } = useGetMatchSummary(activePlayerId ?? 0);
   const {
     data: feedList,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    status: _status,
-    error: _error,
-  } = useGetFeeds(selectedPlayerId ?? 0, 5);
+  } = useGetFeeds(activePlayerId ?? 0, 5);
 
   const { ref: feedEndRef, inView } = useInView();
 
@@ -91,8 +92,10 @@ const HomePage = () => {
             <MatchInfo>
               <NoticeIcon />
               <MatchDetails>
-                <MatchText>안타(타점1) 삼진 땅볼 뜬공</MatchText>
-                <InningBadge>1 / 4</InningBadge>
+                <MatchText>{matchSummary?.highlight.text}</MatchText>
+                <InningBadge>
+                  {matchSummary?.highlight.batting_record}
+                </InningBadge>
               </MatchDetails>
             </MatchInfo>
           </MatchCard>

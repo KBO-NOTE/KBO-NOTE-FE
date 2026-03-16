@@ -5,7 +5,7 @@ const api = ky.create({
   hooks: {
     beforeRequest: [
       (request) => {
-        const token = "test"; // TODO: 실제 토큰 관리 로직으로 교체
+        const token = localStorage.getItem("accessToken"); // TODO: 실제 토큰 관리 로직으로 교체
         if (token) {
           request.headers.set("Authorization", `Bearer ${token}`);
         }
