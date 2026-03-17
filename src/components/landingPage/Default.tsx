@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { theme } from "../../styles/theme";
+import DefaultPlayerImage from "../../assets/images/players/default.png";
 
 interface ActiveProps {
   playerName: string;
@@ -15,7 +16,14 @@ const Default = ({ playerName, onClick }: ActiveProps) => {
   return (
     <Container onClick={onClick}>
       <ImageWrapper>
-        <PlayerImage src={playerImage} alt={playerName} />
+        <PlayerImage
+          src={playerImage}
+          alt={playerName}
+          onError={(event) => {
+            event.currentTarget.onerror = null;
+            event.currentTarget.src = DefaultPlayerImage;
+          }}
+        />
       </ImageWrapper>
     </Container>
   );

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { theme } from '../../styles/theme';
 import IcCheck from '../../assets/icons/check.svg'; 
+import DefaultPlayerImage from '../../assets/images/players/default.png';
 
 interface ActiveProps {
     playerName: string;
@@ -16,7 +17,14 @@ const Active = ({ playerName, onClick }: ActiveProps) => {
             <CheckIcon src={IcCheck} alt="selected" />
         </IconWapper>
         <ImageWrapper>
-            <PlayerImage src={playerImage} alt={playerName} />
+            <PlayerImage
+                src={playerImage}
+                alt={playerName}
+                onError={(event) => {
+                    event.currentTarget.onerror = null;
+                    event.currentTarget.src = DefaultPlayerImage;
+                }}
+            />
             <PlayerName>{playerName}</PlayerName>
             <ImageFilter />
         </ImageWrapper>
