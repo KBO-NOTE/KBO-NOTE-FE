@@ -9,6 +9,8 @@ import type { MatchSummaryResponse } from "./types";
 export const useGetMatchSummary = (playerId: number) => {
   return useQuery<MatchSummaryResponse>({
     queryKey: ["match", playerId],
+    retry: false,
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       // API 경로가 /api/match/{player_id} 형태이면서
       // 쿼리 파라미터 ?player_id=...도 함께 요구하는 경우를 모두 고려한 작성법입니다.
