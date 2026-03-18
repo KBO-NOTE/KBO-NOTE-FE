@@ -12,6 +12,7 @@ export interface HighlightDetailInfo {
   total: number;
   text: string;
   has_audio: boolean;
+  batting_record?: string;
 }
 
 export interface MatchTeamInfo {
