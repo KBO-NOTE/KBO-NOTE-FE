@@ -19,5 +19,6 @@ export const useGetFeeds = (playerId: number, size: number = 5) => {
     initialPageParam: "",
     getNextPageParam: (lastPage) =>
       lastPage.has_next ? lastPage.next_cursor : undefined,
+    enabled: !!playerId,
   });
 };
