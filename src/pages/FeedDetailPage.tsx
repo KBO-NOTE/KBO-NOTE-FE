@@ -2,6 +2,10 @@ import { useState } from "react";
 import styled from "styled-components";
 import { theme } from "../styles/theme";
 import { useNavigate } from "react-router-dom";
+import BackSpace from "../assets/icons/backspace_dark.svg";
+import Heart from "../assets/icons/heart_01.svg";
+import Comment from "../assets/icons/chat01.svg";
+import Send from "../assets/icons/send.svg";
 
 // Mock 댓글 데이터
 const mockComments = [
@@ -85,7 +89,7 @@ const FeedDetailPage = () => {
       <AppBar>
         <AppBarContent>
           <BackButton onClick={handleBack}>
-            <BackIcon />
+            <BackIcon src={BackSpace}></BackIcon>
           </BackButton>
           <SortButton onClick={toggleSortOrder}>
             <FilterIcon />
@@ -104,11 +108,11 @@ const FeedDetailPage = () => {
           <FeedInfo>
             <FeedActions>
               <ActionItem>
-                <HeartIcon />
+                <HeartIcon src={Heart} />
                 <ActionCount>{mockFeedDetail.likeCount}</ActionCount>
               </ActionItem>
               <ActionItem>
-                <CommentIcon />
+                <CommentIcon src={Comment} />
                 <ActionCount>{mockFeedDetail.commentCount}</ActionCount>
               </ActionItem>
             </FeedActions>
@@ -146,7 +150,7 @@ const FeedDetailPage = () => {
               <LikeInfoTime>{mockFeedDetail.time}</LikeInfoTime>
             </LikeInfo>
             <CommentInputRow>
-              <ChatIcon />
+              <CommentIcon src={Comment} />
               <CommentInputWrapper>
                 <CommentInputField
                   placeholder="댓글 달기..."
@@ -154,7 +158,7 @@ const FeedDetailPage = () => {
                   onChange={(e) => setCommentInput(e.target.value)}
                 />
                 <SendButton>
-                  <SendIcon />
+                  <SendIcon src={Send} />
                 </SendButton>
               </CommentInputWrapper>
             </CommentInputRow>
@@ -212,26 +216,30 @@ const BackButton = styled.button`
   width: 44px;
   height: 100%;
 `;
-
-const BackIcon = styled.div`
-  width: 15.58px;
-  height: 15.17px;
-  position: relative;
-
-  &::before {
-    content: "";
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    border-left: 2px solid ${theme.colors.dark01};
-    border-bottom: 2px solid ${theme.colors.dark01};
-    transform: rotate(45deg);
-    top: 50%;
-    left: 50%;
-    margin-left: -3px;
-    margin-top: -5px;
-  }
+const BackIcon = styled.img`
+  width: 24px; /* 아이콘 크기 지정 */
+  height: 24px;
+  object-fit: contain; /* 비율 유지 */
 `;
+// const BackIcon = styled.div`
+//   width: 15.58px;
+//   height: 15.17px;
+//   position: relative;
+
+//   &::before {
+//     content: "";
+//     position: absolute;
+//     width: 10px;
+//     height: 10px;
+//     border-left: 2px solid ${theme.colors.dark01};
+//     border-bottom: 2px solid ${theme.colors.dark01};
+//     transform: rotate(45deg);
+//     top: 50%;
+//     left: 50%;
+//     margin-left: -3px;
+//     margin-top: -5px;
+//   }
+// `;
 
 const SortButton = styled.button`
   background: none;
@@ -332,43 +340,53 @@ const ActionItem = styled.div`
   gap: 4px;
 `;
 
-const HeartIcon = styled.div`
-  width: 24px;
+const HeartIcon = styled.img`
+  width: 24px; /* 아이콘 크기 지정 */
   height: 24px;
-  position: relative;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 20px;
-    height: 18px;
-    background: url("data:image/svg+xml,%3Csvg width='20' height='18' viewBox='0 0 20 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 17.25C10 17.25 1.5 12 1.5 6.5C1.5 3.46 3.96 1 7 1C8.83 1 10.41 1.95 11.25 3.36C11.66 2.54 12.28 1.85 13.04 1.34C13.8 0.83 14.67 0.52 15.58 0.42C16.49 0.32 17.41 0.45 18.26 0.79C19.11 1.13 19.87 1.67 20.46 2.37C21.06 3.07 21.47 3.9 21.66 4.79C21.85 5.68 21.82 6.6 21.57 7.48C21.31 8.35 20.85 9.15 20.21 9.81C19.57 10.46 18.77 10.95 17.89 11.24' stroke='%23374151' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
-      center no-repeat;
-    background-size: contain;
-  }
+  object-fit: contain; /* 비율 유지 */
 `;
+// const HeartIcon = styled.div`
+//   width: 24px;
+//   height: 24px;
+//   position: relative;
 
-const CommentIcon = styled.div`
-  width: 24px;
+//   &::before {
+//     content: "";
+//     position: absolute;
+//     top: 50%;
+//     left: 50%;
+//     transform: translate(-50%, -50%);
+//     width: 20px;
+//     height: 18px;
+//     background: url("data:image/svg+xml,%3Csvg width='20' height='18' viewBox='0 0 20 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 17.25C10 17.25 1.5 12 1.5 6.5C1.5 3.46 3.96 1 7 1C8.83 1 10.41 1.95 11.25 3.36C11.66 2.54 12.28 1.85 13.04 1.34C13.8 0.83 14.67 0.52 15.58 0.42C16.49 0.32 17.41 0.45 18.26 0.79C19.11 1.13 19.87 1.67 20.46 2.37C21.06 3.07 21.47 3.9 21.66 4.79C21.85 5.68 21.82 6.6 21.57 7.48C21.31 8.35 20.85 9.15 20.21 9.81C19.57 10.46 18.77 10.95 17.89 11.24' stroke='%23374151' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+//       center no-repeat;
+//     background-size: contain;
+//   }
+// `;
+
+const CommentIcon = styled.img`
+  width: 24px; /* 아이콘 크기 지정 */
   height: 24px;
-  position: relative;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 20px;
-    height: 20px;
-    background: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M18 9.5C18 14.19 14.19 18 9.5 18L4.6 19.8C4.17 19.97 3.7 19.7 3.53 19.27C3.47 19.13 3.45 18.97 3.49 18.82L4.5 14.97C3.55 13.44 3 11.57 3 9.5C3 4.81 6.81 1 11.5 1C16.19 1 20 4.81 20 9.5' stroke='%23374151' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7 9.5H13' stroke='%23374151' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E")
-      center no-repeat;
-    background-size: contain;
-  }
+  object-fit: contain; /* 비율 유지 */
 `;
+// const CommentIcon = styled.div`
+//   width: 24px;
+//   height: 24px;
+//   position: relative;
+
+//   &::before {
+//     content: "";
+//     position: absolute;
+//     top: 50%;
+//     left: 50%;
+//     transform: translate(-50%, -50%);
+//     width: 20px;
+//     height: 20px;
+//     background: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M18 9.5C18 14.19 14.19 18 9.5 18L4.6 19.8C4.17 19.97 3.7 19.7 3.53 19.27C3.47 19.13 3.45 18.97 3.49 18.82L4.5 14.97C3.55 13.44 3 11.57 3 9.5C3 4.81 6.81 1 11.5 1C16.19 1 20 4.81 20 9.5' stroke='%23374151' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7 9.5H13' stroke='%23374151' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E")
+//       center no-repeat;
+//     background-size: contain;
+//   }
+// `;
 
 const ActionCount = styled.span`
   ${theme.typography.body03}
@@ -530,25 +548,25 @@ const CommentInputRow = styled.div`
   align-items: center;
 `;
 
-const ChatIcon = styled.div`
-  width: 24px;
-  height: 24px;
-  flex-shrink: 0;
-  position: relative;
+// const ChatIcon = styled.div`
+//   width: 24px;
+//   height: 24px;
+//   flex-shrink: 0;
+//   position: relative;
 
-  &::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 18px;
-    height: 18px;
-    background: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16 8.5C16 12.64 12.64 16 8.5 16L4.4 17.6C4.02 17.75 3.6 17.53 3.45 17.15C3.4 17.03 3.38 16.89 3.42 16.76L4.3 13.47C3.48 12.16 3 10.56 3 8.5C3 4.36 6.36 1 10.5 1C14.64 1 18 4.36 18 8.5' stroke='%23374151' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
-      center no-repeat;
-    background-size: contain;
-  }
-`;
+//   &::before {
+//     content: "";
+//     position: absolute;
+//     top: 50%;
+//     left: 50%;
+//     transform: translate(-50%, -50%);
+//     width: 18px;
+//     height: 18px;
+//     background: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16 8.5C16 12.64 12.64 16 8.5 16L4.4 17.6C4.02 17.75 3.6 17.53 3.45 17.15C3.4 17.03 3.38 16.89 3.42 16.76L4.3 13.47C3.48 12.16 3 10.56 3 8.5C3 4.36 6.36 1 10.5 1C14.64 1 18 4.36 18 8.5' stroke='%23374151' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+//       center no-repeat;
+//     background-size: contain;
+//   }
+// `;
 
 const CommentInputWrapper = styled.div`
   flex: 1;
@@ -585,22 +603,8 @@ const SendButton = styled.button`
   align-items: center;
   justify-content: center;
 `;
-
-const SendIcon = styled.div`
-  width: 24px;
+const SendIcon = styled.img`
+  width: 24px; /* 아이콘 크기 지정 */
   height: 24px;
-  position: relative;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 18px;
-    height: 18px;
-    background: url("data:image/svg+xml,%3Csvg width='18' height='20' viewBox='0 0 18 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M17 1L8 10M17 1L11 19L8 10M17 1L1 8L8 10' stroke='%23374151' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
-      center no-repeat;
-    background-size: contain;
-  }
+  object-fit: contain; /* 비율 유지 */
 `;
