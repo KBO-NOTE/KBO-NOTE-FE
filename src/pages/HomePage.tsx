@@ -16,6 +16,16 @@ import type {
 import React from "react";
 import { useInView } from "react-intersection-observer";
 import playersByTeamData from "../data/playersByTeam.json";
+import doosanLogo from "../assets/images/teamLogos/두산 베어스.svg";
+import lotteLogo from "../assets/images/teamLogos/롯데 자이언츠.svg";
+import samsungLogo from "../assets/images/teamLogos/삼성 라이온즈.svg";
+import kiwoomLogo from "../assets/images/teamLogos/키움 히어로즈.svg";
+import hanwhaLogo from "../assets/images/teamLogos/한화 이글스.svg";
+import kiaLogo from "../assets/images/teamLogos/KIA 타이거즈.svg";
+import ktLogo from "../assets/images/teamLogos/KT 위즈.svg";
+import lgLogo from "../assets/images/teamLogos/LG 트윈스.svg";
+import ncLogo from "../assets/images/teamLogos/NC 다이노스.svg";
+import ssgLogo from "../assets/images/teamLogos/SSG 랜더스.svg";
 
 interface Player {
   id: string;
@@ -32,6 +42,46 @@ interface PlayersByTeamData {
 }
 
 const playersByTeam = playersByTeamData as PlayersByTeamData;
+const TEAM_LOGO_BY_KEY: Record<string, string> = {
+  doosan: doosanLogo,
+  "두산": doosanLogo,
+  "두산베어스": doosanLogo,
+  lotte: lotteLogo,
+  "롯데": lotteLogo,
+  "롯데자이언츠": lotteLogo,
+  samsung: samsungLogo,
+  "삼성": samsungLogo,
+  "삼성라이온즈": samsungLogo,
+  kiwoom: kiwoomLogo,
+  "키움": kiwoomLogo,
+  "키움히어로즈": kiwoomLogo,
+  hanwha: hanwhaLogo,
+  "한화": hanwhaLogo,
+  "한화이글스": hanwhaLogo,
+  kia: kiaLogo,
+  "kiatigers": kiaLogo,
+  "kia타이거즈": kiaLogo,
+  kt: ktLogo,
+  "ktwiz": ktLogo,
+  "kt위즈": ktLogo,
+  lg: lgLogo,
+  "lgtwins": lgLogo,
+  "lg트윈스": lgLogo,
+  nc: ncLogo,
+  "ncdinos": ncLogo,
+  "nc다이노스": ncLogo,
+  ssg: ssgLogo,
+  "ssglanders": ssgLogo,
+  "ssg랜더스": ssgLogo,
+};
+
+const normalizeTeamKey = (value?: string) =>
+  value?.toLowerCase().replace(/\s+/g, "").trim() ?? "";
+
+const getTeamLogo = (teamId?: string, teamName?: string) =>
+  TEAM_LOGO_BY_KEY[normalizeTeamKey(teamId)] ??
+  TEAM_LOGO_BY_KEY[normalizeTeamKey(teamName)] ??
+  undefined;
 
 const HomePage = () => {
   const { data: favorites } = useGetFavoritePlayers();
@@ -114,14 +164,26 @@ const HomePage = () => {
             <MatchCard>
               <MatchContent>
                 <TeamContainer>
-                  <TeamLogo />
+                  <TeamLogo
+                    src={getTeamLogo(
+                      matchSummary.match.home.team_id,
+                      matchSummary.match.home.team_name,
+                    )}
+                    alt={matchSummary.match.home.team_name}
+                  />
                   <TeamName>{matchSummary.match.home.team_name}</TeamName>
                 </TeamContainer>
                 <Score>{matchSummary.match.home_score}</Score>
                 <ScoreDivider>:</ScoreDivider>
                 <Score primary>{matchSummary.match.away_score}</Score>
                 <TeamContainer>
-                  <TeamLogo />
+                  <TeamLogo
+                    src={getTeamLogo(
+                      matchSummary.match.away.team_id,
+                      matchSummary.match.away.team_name,
+                    )}
+                    alt={matchSummary.match.away.team_name}
+                  />
                   <TeamName>{matchSummary.match.away.team_name}</TeamName>
                 </TeamContainer>
               </MatchContent>
@@ -382,11 +444,14 @@ const TeamContainer = styled.div`
   gap: 4px;
 `;
 
-const TeamLogo = styled.div`
+const TeamLogo = styled.img`
   width: 64px;
   height: 64px;
   border-radius: ${theme.radius.s};
   background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%);
+  object-fit: contain;
+  padding: 6px;
+  box-sizing: border-box;
 `;
 
 const TeamName = styled.p`
