@@ -30,7 +30,7 @@ const OAuthRedirect = () => {
     void handleRedirect(); 
   }, [navigate]); 
  
-  return <div>·Î±×ÀÎ Ã³¸® Áß...</div>; 
+  return <div>ë¡œê·¸ì¸ ì²˜ë¦¬ ì¤‘...</div>; 
 }; 
  
 export default OAuthRedirect;
