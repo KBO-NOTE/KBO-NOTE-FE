@@ -1,4 +1,3 @@
-//TODO : 투수의 경우는 다를 거임
 export interface PlayerStatsSummary {
   batting_avg_rank: number;
   war_rank: number;
@@ -7,8 +6,7 @@ export interface PlayerStatsSummary {
   home_run_rank: number;
 }
 
-//TODO : 투수의 경우는 다를 거임
-export interface PlayerStatsMetrics {
+export interface BatterStatsMetrics {
   batting_avg: number;
   home_runs: number;
   hits: number;
@@ -18,9 +16,21 @@ export interface PlayerStatsMetrics {
   on_base_percentage: number;
   ops: number;
 }
+
+export interface PitcherStatsMetrics {
+  era: number;
+  games: number;
+  win_loss: string;
+  save_hold: string;
+  innings_pitched: number;
+  strikeouts: number;
+  walks: number;
+  whip: number;
+}
+
 export interface PlayerStatsResponse {
   season: number;
-  player_type: string;
+  player_type: "BATTER" | "PITCHER";
   summary: PlayerStatsSummary;
-  metrics: PlayerStatsMetrics;
+  metrics: BatterStatsMetrics | PitcherStatsMetrics;
 }
