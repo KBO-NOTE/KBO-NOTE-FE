@@ -11,7 +11,9 @@ import { useGetFeeds } from "../api/feeds/queries";
 import { useGetFavoritePlayers } from "../api/favorites/queries";
 import type {
   BatterStatsMetrics,
+  BatterStatsSummary,
   PitcherStatsMetrics,
+  PitcherStatsSummary,
 } from "../api/stats/types";
 import React from "react";
 import { useInView } from "react-intersection-observer";
@@ -44,35 +46,35 @@ interface PlayersByTeamData {
 const playersByTeam = playersByTeamData as PlayersByTeamData;
 const TEAM_LOGO_BY_KEY: Record<string, string> = {
   doosan: doosanLogo,
-  "두산": doosanLogo,
-  "두산베어스": doosanLogo,
+  두산: doosanLogo,
+  두산베어스: doosanLogo,
   lotte: lotteLogo,
-  "롯데": lotteLogo,
-  "롯데자이언츠": lotteLogo,
+  롯데: lotteLogo,
+  롯데자이언츠: lotteLogo,
   samsung: samsungLogo,
-  "삼성": samsungLogo,
-  "삼성라이온즈": samsungLogo,
+  삼성: samsungLogo,
+  삼성라이온즈: samsungLogo,
   kiwoom: kiwoomLogo,
-  "키움": kiwoomLogo,
-  "키움히어로즈": kiwoomLogo,
+  키움: kiwoomLogo,
+  키움히어로즈: kiwoomLogo,
   hanwha: hanwhaLogo,
-  "한화": hanwhaLogo,
-  "한화이글스": hanwhaLogo,
+  한화: hanwhaLogo,
+  한화이글스: hanwhaLogo,
   kia: kiaLogo,
-  "kiatigers": kiaLogo,
-  "kia타이거즈": kiaLogo,
+  kiatigers: kiaLogo,
+  kia타이거즈: kiaLogo,
   kt: ktLogo,
-  "ktwiz": ktLogo,
-  "kt위즈": ktLogo,
+  ktwiz: ktLogo,
+  kt위즈: ktLogo,
   lg: lgLogo,
-  "lgtwins": lgLogo,
-  "lg트윈스": lgLogo,
+  lgtwins: lgLogo,
+  lg트윈스: lgLogo,
   nc: ncLogo,
-  "ncdinos": ncLogo,
-  "nc다이노스": ncLogo,
+  ncdinos: ncLogo,
+  nc다이노스: ncLogo,
   ssg: ssgLogo,
-  "ssglanders": ssgLogo,
-  "ssg랜더스": ssgLogo,
+  ssglanders: ssgLogo,
+  ssg랜더스: ssgLogo,
 };
 
 const normalizeTeamKey = (value?: string) =>
@@ -114,6 +116,16 @@ const HomePage = () => {
     stats?.player_type === "PITCHER"
       ? (stats.metrics as PitcherStatsMetrics)
       : null;
+
+  const batterRanks =
+    stats?.player_type === "BATTER"
+      ? (stats.summary as BatterStatsSummary)
+      : null;
+
+  const pitcherRanks =
+    stats?.player_type === "PITCHER"
+      ? (stats.summary as PitcherStatsSummary)
+      : null;
   const {
     data: feedList,
     fetchNextPage,
@@ -143,14 +155,21 @@ const HomePage = () => {
       <HomeAppBar />
       {/* Player Section */}
       <PlayerSection>
-        {playerIds.map((playerId) => (
-          <HomePlayerCard
-            playerName={playerNameById[playerId] ?? String(playerId)}
-            key={playerId}
-            isActive={activePlayerId === playerId}
-            onClick={() => setSelectedPlayerId(playerId)}
-          />
-        ))}
+        {playerIds.map((playerId) => {
+          const playerImage = new URL(
+            `../assets/images/players/${playerId}.jpg`,
+            import.meta.url,
+          ).href;
+          return (
+            <HomePlayerCard
+              playerName={playerNameById[playerId] ?? String(playerId)}
+              playerImg={playerImage}
+              key={playerId}
+              isActive={activePlayerId === playerId}
+              onClick={() => setSelectedPlayerId(playerId)}
+            />
+          );
+        })}
         <PlayerAddCard onClick={onPlayerAddClick}>
           <PlusIcon />
         </PlayerAddCard>
@@ -209,17 +228,56 @@ const HomePage = () => {
             <StatsCard>
               <AchievementBadge>
                 <TrophyIcon />
-                <BadgeScroll>
-                  <BadgeText>WAR {stats.summary.war_rank}위</BadgeText>
-                  <Dot />
-                  <BadgeText>타율 {stats.summary.batting_avg_rank}위</BadgeText>
-                  <Dot />
-                  <BadgeText>안타 {stats.summary.hits_rank}위</BadgeText>
-                  <Dot />
-                  <BadgeText>타점 {stats.summary.rbi_rank}위</BadgeText>
-                  <Dot />
-                  <BadgeText>홈런 {stats.summary.home_run_rank}위</BadgeText>
-                </BadgeScroll>
+
+                {stats.player_type === "BATTER" ? (
+                  <BadgeScroll>
+                    <BadgeText>
+                      타율 {batterRanks?.batting_avg_rank}위
+                    </BadgeText>
+                    <Dot />
+                    <BadgeText>홈런 {batterRanks?.home_runs_rank}위</BadgeText>
+                    <Dot />
+                    <BadgeText>안타 {batterRanks?.hits_rank}위</BadgeText>
+                    <Dot />
+                    <BadgeText>타점 {batterRanks?.rbi_rank}위</BadgeText>
+                    <Dot />
+                    <BadgeText>득점 {batterRanks?.runs_rank}위</BadgeText>
+                    <Dot />
+                    <BadgeText>
+                      도루 {batterRanks?.stolen_bases_rank}위
+                    </BadgeText>
+                    <Dot />
+                    <BadgeText>
+                      출루율 {batterRanks?.on_base_percentage_rank}위
+                    </BadgeText>
+                    <Dot />
+                    <BadgeText>OPS {batterRanks?.ops_rank}위</BadgeText>
+                  </BadgeScroll>
+                ) : (
+                  <BadgeScroll>
+                    <BadgeText>평균자책 {pitcherRanks?.era_rank}위</BadgeText>
+                    <Dot />
+                    <BadgeText>경기 수 {pitcherRanks?.games_rank}위</BadgeText>
+                    <Dot />
+                    <BadgeText>승 {pitcherRanks?.wins_rank}위</BadgeText>
+                    <Dot />
+                    <BadgeText>세이브 {pitcherRanks?.saves_rank}위</BadgeText>
+                    <Dot />
+                    <BadgeText>홀드 {pitcherRanks?.holds_rank}위</BadgeText>
+                    <Dot />
+                    <BadgeText>
+                      이닝 {pitcherRanks?.innings_pitched_rank}위
+                    </BadgeText>
+                    <Dot />
+                    <BadgeText>
+                      탈삼진 {pitcherRanks?.strikeouts_rank}위
+                    </BadgeText>
+                    <Dot />
+                    <BadgeText>4사구 {pitcherRanks?.walks_rank}위</BadgeText>
+                    <Dot />
+                    <BadgeText>whip {pitcherRanks?.whip_rank}위</BadgeText>
+                  </BadgeScroll>
+                )}
               </AchievementBadge>
 
               {stats.player_type === "BATTER" ? (
