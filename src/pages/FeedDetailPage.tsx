@@ -123,7 +123,7 @@ const FeedDetailPage = () => {
       <MainContent>
         {/* Feed Content - Left Side */}
         <FeedContent>
-          <FeedImage onClick={() => window.open(content.article_url, "_blank")}>
+          <FeedImage onClick={() => window.open(content.url, "_blank")}>
             <img src={content.representative_image_url} alt="Feed" />
           </FeedImage>
           <FeedInfo>
