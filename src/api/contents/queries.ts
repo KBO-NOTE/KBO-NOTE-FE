@@ -16,7 +16,7 @@ export const useGetContent = (contentId: number) => {
 export const useGetComments = (
   contentId: number,
   size: number = 20,
-  sort: string = "latest"
+  sort: string = "latest",
 ) => {
   return useInfiniteQuery<CommentListResponse>({
     queryKey: ["comments", contentId, sort],
@@ -29,7 +29,7 @@ export const useGetComments = (
         searchParams.cursor = pageParam as string;
       }
       return api
-        .get(`contents/${contentId}/comment`, { searchParams })
+        .get(`contents/${contentId}/comments`, { searchParams })
         .json<CommentListResponse>();
     },
     initialPageParam: "",

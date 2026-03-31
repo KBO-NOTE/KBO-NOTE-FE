@@ -25,7 +25,7 @@ export const usePostComment = (contentId: number) => {
   return useMutation<PostCommentResponse, Error, PostCommentRequest>({
     mutationFn: (body) =>
       api
-        .post(`contents/${contentId}/comment`, { json: body })
+        .post(`contents/${contentId}/comments`, { json: body })
         .json<PostCommentResponse>(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments", contentId] });
