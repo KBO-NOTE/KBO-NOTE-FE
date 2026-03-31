@@ -3,13 +3,14 @@ import { theme } from "../../styles/theme";
 import DefaultPlayerImage from "../../assets/images/players/default.png";
 
 interface ActiveProps {
+  playerId: string;
   playerName: string;
   onClick?: () => void;
 }
 
-const Default = ({ playerName, onClick }: ActiveProps) => {
+const Default = ({ playerId, playerName, onClick }: ActiveProps) => {
   const playerImage = new URL(
-    `../../assets/images/players/${playerName}.png`,
+    `../../assets/images/players/${playerId}.jpg`,
     import.meta.url,
   ).href;
 
@@ -57,7 +58,7 @@ const PlayerImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  top: 20px;
+  top: 0px;
 `;
 
 export default Default;

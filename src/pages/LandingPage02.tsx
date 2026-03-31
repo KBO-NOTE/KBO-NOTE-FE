@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { theme } from "../styles/theme";
 import SelectTeamActive from "../components/landingPage/SelectTeamActive";
@@ -57,6 +57,7 @@ const TEAM_NAME_BY_ID: Record<string, string> = {
 
 const LandingPage02 = () => {
   const navigate = useNavigate();
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const [selectedTeam, setSelectedTeam] = useState("doosan");
   const [selectedPlayerIds, setSelectedPlayerIds] = useState<number[]>(() => {
     const stored = localStorage.getItem(SELECTED_PLAYERS_STORAGE_KEY);
@@ -75,6 +76,61 @@ const LandingPage02 = () => {
     }
   });
   const followFavoritePlayer = useFollowFavoritePlayer();
+
+  useEffect(() => {
+    const scrollArea = scrollAreaRef.current;
+    if (!scrollArea) return;
+
+    let isDown = false;
+    let startX = 0;
+    let startScrollLeft = 0;
+
+    const handleMouseDown = (e: MouseEvent) => {
+      isDown = true;
+      startX = e.clientX;
+      startScrollLeft = scrollArea.scrollLeft;
+      scrollArea.style.cursor = "grabbing";
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDown) return;
+      const walk = (e.clientX - startX) * 1.5;
+      scrollArea.scrollLeft = startScrollLeft - walk;
+    };
+
+    const handleMouseUp = () => {
+      isDown = false;
+      scrollArea.style.cursor = "grab";
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      isDown = true;
+      startX = e.touches[0].clientX;
+      startScrollLeft = scrollArea.scrollLeft;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isDown) return;
+      const walk = (e.touches[0].clientX - startX) * 1.5;
+      scrollArea.scrollLeft = startScrollLeft - walk;
+    };
+
+    scrollArea.addEventListener("mousedown", handleMouseDown);
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+    scrollArea.addEventListener("touchstart", handleTouchStart);
+    document.addEventListener("touchmove", handleTouchMove);
+    document.addEventListener("touchend", handleMouseUp);
+
+    return () => {
+      scrollArea.removeEventListener("mousedown", handleMouseDown);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      scrollArea.removeEventListener("touchstart", handleTouchStart);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleMouseUp);
+    };
+  }, []);
   const players =
     playersByTeam.teams.find(
       (team) => team.team === TEAM_NAME_BY_ID[selectedTeam],
@@ -130,7 +186,7 @@ const LandingPage02 = () => {
         >
           <Icon src={SearchIcon} alt="search icon" />
         </IconWapper>
-        <TeamScrollArea>
+        <TeamScrollArea ref={scrollAreaRef}>
           <TeamList>
             {TEAMS.map((team) =>
               team.id === selectedTeam ? (
@@ -158,12 +214,14 @@ const LandingPage02 = () => {
           selectedPlayerIds.includes(Number(player.id)) ? (
             <PlayerCardActive
               key={player.id}
+              playerId={player.id}
               playerName={player.name}
               onClick={() => handleSelectPlayer(Number(player.id))}
             />
           ) : (
             <PlayerCardDefault
               key={player.id}
+              playerId={player.id}
               playerName={player.name}
               onClick={() => handleSelectPlayer(Number(player.id))}
             />
@@ -252,6 +310,8 @@ const TeamScrollArea = styled.div`
   overflow-y: hidden;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  cursor: grab;
+  user-select: none;
 
   &::-webkit-scrollbar {
     display: none;
