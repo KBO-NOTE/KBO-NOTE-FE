@@ -9,6 +9,8 @@ import type { PlayerStatsResponse } from "./types";
 export const useGetPlayerStats = (playerId: number) => {
   return useQuery<PlayerStatsResponse>({
     queryKey: ["stats", playerId],
+    retry: false,
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       // 경로 파라미터와 쿼리 파라미터를 모두 포함하는 예시 주소 대응
       return api.get(`stats/${playerId}`).json<PlayerStatsResponse>();

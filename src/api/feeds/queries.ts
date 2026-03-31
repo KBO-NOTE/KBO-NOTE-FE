@@ -5,6 +5,8 @@ import type { FeedListResponse } from "./types";
 export const useGetFeeds = (playerId: number, size: number = 5) => {
   return useInfiniteQuery<FeedListResponse>({
     queryKey: ["feeds", playerId],
+    retry: false,
+    refetchOnWindowFocus: false,
     queryFn: async ({ pageParam }) => {
       const searchParams: Record<string, string> = { size: String(size) };
       if (pageParam) {

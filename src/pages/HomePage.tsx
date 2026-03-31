@@ -9,26 +9,111 @@ import { useGetPlayerStats } from "../api/stats/queries";
 import { useGetMatchSummary } from "../api/match/queries";
 import { useGetFeeds } from "../api/feeds/queries";
 import { useGetFavoritePlayers } from "../api/favorites/queries";
+import type {
+  BatterStatsMetrics,
+  PitcherStatsMetrics,
+} from "../api/stats/types";
 import React from "react";
 import { useInView } from "react-intersection-observer";
+import playersByTeamData from "../data/playersByTeam.json";
+import doosanLogo from "../assets/images/teamLogos/두산 베어스.svg";
+import lotteLogo from "../assets/images/teamLogos/롯데 자이언츠.svg";
+import samsungLogo from "../assets/images/teamLogos/삼성 라이온즈.svg";
+import kiwoomLogo from "../assets/images/teamLogos/키움 히어로즈.svg";
+import hanwhaLogo from "../assets/images/teamLogos/한화 이글스.svg";
+import kiaLogo from "../assets/images/teamLogos/KIA 타이거즈.svg";
+import ktLogo from "../assets/images/teamLogos/KT 위즈.svg";
+import lgLogo from "../assets/images/teamLogos/LG 트윈스.svg";
+import ncLogo from "../assets/images/teamLogos/NC 다이노스.svg";
+import ssgLogo from "../assets/images/teamLogos/SSG 랜더스.svg";
+
+interface Player {
+  id: string;
+  name: string;
+}
+
+interface TeamPlayers {
+  team: string;
+  players: Player[];
+}
+
+interface PlayersByTeamData {
+  teams: TeamPlayers[];
+}
+
+const playersByTeam = playersByTeamData as PlayersByTeamData;
+const TEAM_LOGO_BY_KEY: Record<string, string> = {
+  doosan: doosanLogo,
+  "두산": doosanLogo,
+  "두산베어스": doosanLogo,
+  lotte: lotteLogo,
+  "롯데": lotteLogo,
+  "롯데자이언츠": lotteLogo,
+  samsung: samsungLogo,
+  "삼성": samsungLogo,
+  "삼성라이온즈": samsungLogo,
+  kiwoom: kiwoomLogo,
+  "키움": kiwoomLogo,
+  "키움히어로즈": kiwoomLogo,
+  hanwha: hanwhaLogo,
+  "한화": hanwhaLogo,
+  "한화이글스": hanwhaLogo,
+  kia: kiaLogo,
+  "kiatigers": kiaLogo,
+  "kia타이거즈": kiaLogo,
+  kt: ktLogo,
+  "ktwiz": ktLogo,
+  "kt위즈": ktLogo,
+  lg: lgLogo,
+  "lgtwins": lgLogo,
+  "lg트윈스": lgLogo,
+  nc: ncLogo,
+  "ncdinos": ncLogo,
+  "nc다이노스": ncLogo,
+  ssg: ssgLogo,
+  "ssglanders": ssgLogo,
+  "ssg랜더스": ssgLogo,
+};
+
+const normalizeTeamKey = (value?: string) =>
+  value?.toLowerCase().replace(/\s+/g, "").trim() ?? "";
+
+const getTeamLogo = (teamId?: string, teamName?: string) =>
+  TEAM_LOGO_BY_KEY[normalizeTeamKey(teamId)] ??
+  TEAM_LOGO_BY_KEY[normalizeTeamKey(teamName)] ??
+  undefined;
 
 const HomePage = () => {
   const { data: favorites } = useGetFavoritePlayers();
   const playerIds = useMemo(() => favorites?.playerIds ?? [], [favorites]);
+  const playerNameById = useMemo(() => {
+    return playersByTeam.teams.reduce<Record<number, string>>((acc, team) => {
+      team.players.forEach((player) => {
+        acc[Number(player.id)] = player.name;
+      });
+      return acc;
+    }, {});
+  }, []);
 
   const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null);
-  //TODO : 로직 살리기
-  // const activePlayerId = selectedPlayerId ?? playerIds[0] ?? null;
-  const activePlayerId = 54400;
+  const activePlayerId = useMemo(() => {
+    if (selectedPlayerId !== null && playerIds.includes(selectedPlayerId)) {
+      return selectedPlayerId;
+    }
 
-  // useEffect(() => {
-  //   if (playerIds.length > 0 && selectedPlayerId === null) {
-  //     setSelectedPlayerId(playerIds[0]);
-  //   }
-  // }, [playerIds, selectedPlayerId]);
+    return playerIds[0] ?? null;
+  }, [playerIds, selectedPlayerId]);
 
   const { data: stats } = useGetPlayerStats(activePlayerId ?? 0);
   const { data: matchSummary } = useGetMatchSummary(activePlayerId ?? 0);
+  const batterStats =
+    stats?.player_type === "BATTER"
+      ? (stats.metrics as BatterStatsMetrics)
+      : null;
+  const pitcherStats =
+    stats?.player_type === "PITCHER"
+      ? (stats.metrics as PitcherStatsMetrics)
+      : null;
   const {
     data: feedList,
     fetchNextPage,
@@ -60,9 +145,9 @@ const HomePage = () => {
       <PlayerSection>
         {playerIds.map((playerId) => (
           <HomePlayerCard
-            playerName={String(playerId)}
+            playerName={playerNameById[playerId] ?? String(playerId)}
             key={playerId}
-            isActive={selectedPlayerId === playerId}
+            isActive={activePlayerId === playerId}
             onClick={() => setSelectedPlayerId(playerId)}
           />
         ))}
@@ -75,90 +160,151 @@ const HomePage = () => {
         {/* Today's Match Section */}
         <Section>
           <SectionTitle>Today's Match</SectionTitle>
-          <MatchCard>
-            <MatchContent>
-              <TeamContainer>
-                <TeamLogo />
-                <TeamName>{matchSummary?.match.home.team_name}</TeamName>
-              </TeamContainer>
-              <Score>{matchSummary?.match.home_score}</Score>
-              <ScoreDivider>:</ScoreDivider>
-              <Score primary>{matchSummary?.match.away_score}</Score>
-              <TeamContainer>
-                <TeamLogo />
-                <TeamName>{matchSummary?.match.away.team_name}</TeamName>
-              </TeamContainer>
-            </MatchContent>
-            <MatchInfo>
-              <NoticeIcon />
-              <MatchDetails>
-                <MatchText>{matchSummary?.highlight.text}</MatchText>
-                <InningBadge>
-                  {matchSummary?.highlight.batting_record}
-                </InningBadge>
-              </MatchDetails>
-            </MatchInfo>
-          </MatchCard>
+          {matchSummary ? (
+            <MatchCard>
+              <MatchContent>
+                <TeamContainer>
+                  <TeamLogo
+                    src={getTeamLogo(
+                      matchSummary.match.home.team_id,
+                      matchSummary.match.home.team_name,
+                    )}
+                    alt={matchSummary.match.home.team_name}
+                  />
+                  <TeamName>{matchSummary.match.home.team_name}</TeamName>
+                </TeamContainer>
+                <Score>{matchSummary.match.home_score}</Score>
+                <ScoreDivider>:</ScoreDivider>
+                <Score primary>{matchSummary.match.away_score}</Score>
+                <TeamContainer>
+                  <TeamLogo
+                    src={getTeamLogo(
+                      matchSummary.match.away.team_id,
+                      matchSummary.match.away.team_name,
+                    )}
+                    alt={matchSummary.match.away.team_name}
+                  />
+                  <TeamName>{matchSummary.match.away.team_name}</TeamName>
+                </TeamContainer>
+              </MatchContent>
+              <MatchInfo>
+                <NoticeIcon />
+                <MatchDetails>
+                  <MatchText>{matchSummary.highlight.text}</MatchText>
+                  <InningBadge>
+                    {`${matchSummary.match.status} · ${matchSummary.match.inning}`}
+                  </InningBadge>
+                </MatchDetails>
+              </MatchInfo>
+            </MatchCard>
+          ) : (
+            <EmptyCard>오늘 경기 정보가 없습니다.</EmptyCard>
+          )}
         </Section>
 
         {/* Season Stats Section */}
         <Section>
-          <SectionTitle>2025 시즌 성적</SectionTitle>
-          <StatsCard>
-            <AchievementBadge>
-              <TrophyIcon />
-              <BadgeScroll>
-                <BadgeText>타율 {stats?.summary.batting_avg_rank}위</BadgeText>
-                <Dot />
-                <BadgeText>WAR {stats?.summary.war_rank}위</BadgeText>
-                <Dot />
-                <BadgeText>안타 {stats?.summary.hits_rank}위</BadgeText>
-                <Dot />
-                <BadgeText>타점 {stats?.summary.rbi_rank}위</BadgeText>
-                <Dot />
-                <BadgeText>홈런 {stats?.summary.home_run_rank}위</BadgeText>
-              </BadgeScroll>
-            </AchievementBadge>
+          <SectionTitle>{stats?.season ?? 2025} 시즌 성적</SectionTitle>
+          {stats ? (
+            <StatsCard>
+              <AchievementBadge>
+                <TrophyIcon />
+                <BadgeScroll>
+                  <BadgeText>WAR {stats.summary.war_rank}위</BadgeText>
+                  <Dot />
+                  <BadgeText>타율 {stats.summary.batting_avg_rank}위</BadgeText>
+                  <Dot />
+                  <BadgeText>안타 {stats.summary.hits_rank}위</BadgeText>
+                  <Dot />
+                  <BadgeText>타점 {stats.summary.rbi_rank}위</BadgeText>
+                  <Dot />
+                  <BadgeText>홈런 {stats.summary.home_run_rank}위</BadgeText>
+                </BadgeScroll>
+              </AchievementBadge>
 
-            <StatsGrid>
-              <StatsRow>
-                <StatItem>
-                  <StatLabel>타율</StatLabel>
-                  <StatValue>{stats?.metrics.batting_avg}</StatValue>
-                </StatItem>
-                <StatItem>
-                  <StatLabel>홈런</StatLabel>
-                  <StatValue>{stats?.metrics.home_runs}</StatValue>
-                </StatItem>
-                <StatItem>
-                  <StatLabel>안타</StatLabel>
-                  <StatValue>{stats?.metrics.hits}</StatValue>
-                </StatItem>
-                <StatItem>
-                  <StatLabel>타점</StatLabel>
-                  <StatValue>{stats?.metrics.rbi}</StatValue>
-                </StatItem>
-              </StatsRow>
-              <StatsRow>
-                <StatItem>
-                  <StatLabel>득점</StatLabel>
-                  <StatValue>{stats?.metrics.runs}</StatValue>
-                </StatItem>
-                <StatItem>
-                  <StatLabel>도루</StatLabel>
-                  <StatValue>{stats?.metrics.stolen_bases}</StatValue>
-                </StatItem>
-                <StatItem>
-                  <StatLabel>출루율</StatLabel>
-                  <StatValue>{stats?.metrics.on_base_percentage}</StatValue>
-                </StatItem>
-                <StatItem>
-                  <StatLabel>OPS</StatLabel>
-                  <StatValue>{stats?.metrics.ops}</StatValue>
-                </StatItem>
-              </StatsRow>
-            </StatsGrid>
-          </StatsCard>
+              {stats.player_type === "BATTER" ? (
+                <StatsGrid>
+                  <StatsRow>
+                    <StatItem>
+                      <StatLabel>타율</StatLabel>
+                      <StatValue>{batterStats?.batting_avg}</StatValue>
+                    </StatItem>
+                    <StatItem>
+                      <StatLabel>홈런</StatLabel>
+                      <StatValue>{batterStats?.home_runs}</StatValue>
+                    </StatItem>
+                    <StatItem>
+                      <StatLabel>안타</StatLabel>
+                      <StatValue>{batterStats?.hits}</StatValue>
+                    </StatItem>
+                    <StatItem>
+                      <StatLabel>타점</StatLabel>
+                      <StatValue>{batterStats?.rbi}</StatValue>
+                    </StatItem>
+                  </StatsRow>
+                  <StatsRow>
+                    <StatItem>
+                      <StatLabel>득점</StatLabel>
+                      <StatValue>{batterStats?.runs}</StatValue>
+                    </StatItem>
+                    <StatItem>
+                      <StatLabel>도루</StatLabel>
+                      <StatValue>{batterStats?.stolen_bases}</StatValue>
+                    </StatItem>
+                    <StatItem>
+                      <StatLabel>출루율</StatLabel>
+                      <StatValue>{batterStats?.on_base_percentage}</StatValue>
+                    </StatItem>
+                    <StatItem>
+                      <StatLabel>OPS</StatLabel>
+                      <StatValue>{batterStats?.ops}</StatValue>
+                    </StatItem>
+                  </StatsRow>
+                </StatsGrid>
+              ) : (
+                <StatsGrid>
+                  <StatsRow>
+                    <StatItem>
+                      <StatLabel>ERA</StatLabel>
+                      <StatValue>{pitcherStats?.era}</StatValue>
+                    </StatItem>
+                    <StatItem>
+                      <StatLabel>경기</StatLabel>
+                      <StatValue>{pitcherStats?.games}</StatValue>
+                    </StatItem>
+                    <StatItem>
+                      <StatLabel>승패</StatLabel>
+                      <StatValue>{pitcherStats?.win_loss}</StatValue>
+                    </StatItem>
+                    <StatItem>
+                      <StatLabel>세이브/홀드</StatLabel>
+                      <StatValue>{pitcherStats?.save_hold}</StatValue>
+                    </StatItem>
+                  </StatsRow>
+                  <StatsRow>
+                    <StatItem>
+                      <StatLabel>이닝</StatLabel>
+                      <StatValue>{pitcherStats?.innings_pitched}</StatValue>
+                    </StatItem>
+                    <StatItem>
+                      <StatLabel>탈삼진</StatLabel>
+                      <StatValue>{pitcherStats?.strikeouts}</StatValue>
+                    </StatItem>
+                    <StatItem>
+                      <StatLabel>볼넷</StatLabel>
+                      <StatValue>{pitcherStats?.walks}</StatValue>
+                    </StatItem>
+                    <StatItem>
+                      <StatLabel>WHIP</StatLabel>
+                      <StatValue>{pitcherStats?.whip}</StatValue>
+                    </StatItem>
+                  </StatsRow>
+                </StatsGrid>
+              )}
+            </StatsCard>
+          ) : (
+            <EmptyCard>시즌 성적 정보가 없습니다.</EmptyCard>
+          )}
         </Section>
 
         {/* KBO Feed Section */}
@@ -298,11 +444,14 @@ const TeamContainer = styled.div`
   gap: 4px;
 `;
 
-const TeamLogo = styled.div`
+const TeamLogo = styled.img`
   width: 64px;
   height: 64px;
   border-radius: ${theme.radius.s};
   background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%);
+  object-fit: contain;
+  padding: 6px;
+  box-sizing: border-box;
 `;
 
 const TeamName = styled.p`
@@ -467,4 +616,13 @@ const LoadingText = styled.p`
   text-align: center;
   margin: 0;
   padding: 8px 0;
+`;
+
+const EmptyCard = styled.div`
+  background: ${theme.colors.white};
+  border: 1px solid ${theme.colors.light02};
+  border-radius: ${theme.radius.xl};
+  padding: 20px 16px;
+  ${theme.typography.body03}
+  color: ${theme.colors.dark03};
 `;
