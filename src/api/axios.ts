@@ -30,9 +30,11 @@ const onRefreshed = (token?: string) => {
 instance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    const originalConfig = error.config as (InternalAxiosRequestConfig & {
-      _retry?: boolean;
-    }) | null;
+    const originalConfig = error.config as
+      | (InternalAxiosRequestConfig & {
+          _retry?: boolean;
+        })
+      | null;
 
     if (!originalConfig || originalConfig._retry) {
       return Promise.reject(error);
@@ -86,7 +88,7 @@ instance.interceptors.response.use(
     } finally {
       isRefreshing = false;
     }
-  }
+  },
 );
 
 export default instance;
