@@ -85,6 +85,33 @@ const getTeamLogo = (teamId?: string, teamName?: string) =>
   TEAM_LOGO_BY_KEY[normalizeTeamKey(teamName)] ??
   undefined;
 
+const formatBattingAverage = (value?: number) => {
+  if (value === undefined || value === null) return "-";
+  return value.toFixed(3);
+};
+
+const formatERA = (value?: number) => {
+  if (value === undefined || value === null) return "-";
+  return value.toFixed(2);
+};
+
+const formatInnings = (value?: number | string) => {
+  if (value === undefined || value === null) return "-";
+  const num = typeof value === "string" ? parseFloat(value) : value;
+  const whole = Math.floor(num);
+  const decimal = Math.round((num - whole) * 10) / 10;
+
+  if (decimal === 0.1) {
+    return `${whole}.1`;
+  } else if (decimal === 0.2) {
+    return `${whole}.2`;
+  } else if (decimal === 0) {
+    return whole.toString();
+  }
+
+  return num.toFixed(1);
+};
+
 const HomePage = () => {
   const { data: favorites } = useGetFavoritePlayers();
   const playerIds = useMemo(() => favorites?.playerIds ?? [], [favorites]);
@@ -209,7 +236,10 @@ const HomePage = () => {
               <MatchInfo>
                 <NoticeIcon />
                 <MatchDetails>
-                  <MatchText>{matchSummary.highlight.text}</MatchText>
+                  <MatchText>
+                    {matchSummary.highlight?.text ||
+                      "경기 중계 정보가 없습니다."}
+                  </MatchText>
                   <InningBadge>
                     {`${matchSummary.match.status} · ${matchSummary.match.inning}`}
                   </InningBadge>
@@ -285,7 +315,9 @@ const HomePage = () => {
                   <StatsRow>
                     <StatItem>
                       <StatLabel>타율</StatLabel>
-                      <StatValue>{batterStats?.batting_avg}</StatValue>
+                      <StatValue>
+                        {formatBattingAverage(batterStats?.batting_avg)}
+                      </StatValue>
                     </StatItem>
                     <StatItem>
                       <StatLabel>홈런</StatLabel>
@@ -311,11 +343,15 @@ const HomePage = () => {
                     </StatItem>
                     <StatItem>
                       <StatLabel>출루율</StatLabel>
-                      <StatValue>{batterStats?.on_base_percentage}</StatValue>
+                      <StatValue>
+                        {formatBattingAverage(batterStats?.on_base_percentage)}
+                      </StatValue>
                     </StatItem>
                     <StatItem>
                       <StatLabel>OPS</StatLabel>
-                      <StatValue>{batterStats?.ops}</StatValue>
+                      <StatValue>
+                        {formatBattingAverage(batterStats?.ops)}
+                      </StatValue>
                     </StatItem>
                   </StatsRow>
                 </StatsGrid>
@@ -324,7 +360,7 @@ const HomePage = () => {
                   <StatsRow>
                     <StatItem>
                       <StatLabel>ERA</StatLabel>
-                      <StatValue>{pitcherStats?.era}</StatValue>
+                      <StatValue>{formatERA(pitcherStats?.era)}</StatValue>
                     </StatItem>
                     <StatItem>
                       <StatLabel>경기</StatLabel>
@@ -342,7 +378,9 @@ const HomePage = () => {
                   <StatsRow>
                     <StatItem>
                       <StatLabel>이닝</StatLabel>
-                      <StatValue>{pitcherStats?.innings_pitched}</StatValue>
+                      <StatValue>
+                        {formatInnings(pitcherStats?.innings_pitched)}
+                      </StatValue>
                     </StatItem>
                     <StatItem>
                       <StatLabel>탈삼진</StatLabel>
@@ -354,7 +392,7 @@ const HomePage = () => {
                     </StatItem>
                     <StatItem>
                       <StatLabel>WHIP</StatLabel>
-                      <StatValue>{pitcherStats?.whip}</StatValue>
+                      <StatValue>{formatERA(pitcherStats?.whip)}</StatValue>
                     </StatItem>
                   </StatsRow>
                 </StatsGrid>
