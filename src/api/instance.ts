@@ -33,6 +33,7 @@ const api = ky.create({
         const isRefreshRequest = request.url.includes("/auth/refresh");
         const alreadyRetried = request.headers.get("x-refresh-retry") === "1";
         const hasRefreshToken = !!localStorage.getItem("refreshToken");
+        console.log("a");
 
         if (!hasRefreshToken) {
           localStorage.removeItem("accessToken");
@@ -40,11 +41,11 @@ const api = ky.create({
           window.location.href = "/login";
           return response;
         }
-
+        console.log("b");
         if (isRefreshRequest || alreadyRetried) {
           return response;
         }
-
+        console.log("c");
         try {
           const newAccessToken = await getFreshAccessToken();
 
