@@ -7,7 +7,7 @@ import Heart from "../assets/icons/heart_01.svg";
 import Filled_Heart from "../assets/icons/heart_02.svg";
 import Comment from "../assets/icons/chat01.svg";
 import Send from "../assets/icons/send.svg";
-import { useGetContent, useGetComments } from "../api/contents/queries";
+import { useGetContent, useGetComments, useGetContentImages } from "../api/contents/queries";
 import { usePostLike, usePostComment } from "../api/contents/mutations";
 
 const formatRelativeTime = (dateString: string): string => {
@@ -31,9 +31,11 @@ const FeedDetailPage = () => {
 
   const [sortOrder, setSortOrder] = useState<"latest" | "popular">("latest");
   const [commentInput, setCommentInput] = useState("");
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const { data: content, isLoading: isContentLoading } =
     useGetContent(contentId);
+  const { data: imagesData } = useGetContentImages(contentId);
   const {
     data: commentPages,
     fetchNextPage,
@@ -67,6 +69,8 @@ const FeedDetailPage = () => {
     observer.observe(sentinel);
     return () => observer.disconnect();
   }, [handleObserver]);
+
+  const images = imagesData?.images ?? [];
 
   const handleBack = () => {
     navigate(-1);
@@ -123,9 +127,43 @@ const FeedDetailPage = () => {
       <MainContent>
         {/* Feed Content - Left Side */}
         <FeedContent>
-          <FeedImage onClick={() => window.open(content.url, "_blank")}>
-            <img src={content.representative_image_url} alt="Feed" />
-          </FeedImage>
+          <ImageCarousel onClick={() => window.open(content.url, "_blank")}>
+            <CarouselImage
+              src={
+                images.length > 0
+                  ? images[currentImageIndex].image_url
+                  : content.representative_image_url
+              }
+              alt="Feed"
+            />
+            {images.length > 1 && (
+              <>
+                <ArrowButton
+                  $direction="left"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentImageIndex((i) => Math.max(0, i - 1));
+                  }}
+                >
+                  <ChevronLeft />
+                </ArrowButton>
+                <ArrowButton
+                  $direction="right"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentImageIndex((i) => Math.min(images.length - 1, i + 1));
+                  }}
+                >
+                  <ChevronRight />
+                </ArrowButton>
+                <DotIndicator>
+                  {images.map((_, idx) => (
+                    <Dot key={idx} $active={idx === currentImageIndex} />
+                  ))}
+                </DotIndicator>
+              </>
+            )}
+          </ImageCarousel>
           <FeedInfo>
             <FeedActions>
               <ActionItem onClick={() => toggleLike()}>
@@ -145,31 +183,41 @@ const FeedDetailPage = () => {
         <CommentPanel>
           <CommentListWrapper>
             <CommentList>
-              {comments.map((comment) => (
-                <CommentItem key={comment.id}>
-                  <Avatar>
-                    {comment.profile_image_url ? (
-                      <AvatarImg
-                        src={comment.profile_image_url}
-                        alt={comment.nickname}
-                      />
-                    ) : (
-                      <PersonIcon />
-                    )}
-                  </Avatar>
-                  <CommentContent>
-                    <CommentHeader>
-                      <CommentUsername>{comment.nickname}</CommentUsername>
-                      <CommentText>{comment.content}</CommentText>
-                    </CommentHeader>
-                    <CommentTime>
-                      {formatRelativeTime(comment.created_at)}
-                    </CommentTime>
-                  </CommentContent>
-                </CommentItem>
-              ))}
-              <div ref={sentinelRef} />
-              {isFetchingNextPage && <LoadingText>불러오는 중...</LoadingText>}
+              {comments.length === 0 ? (
+                <EmptyState>
+                  <EmptyEmoji>💬</EmptyEmoji>
+                  <EmptyTitle>아직 작성된 댓글이 없어요!</EmptyTitle>
+                  <EmptySubtitle>첫 댓글을 작성해보세요</EmptySubtitle>
+                </EmptyState>
+              ) : (
+                <>
+                  {comments.map((comment) => (
+                    <CommentItem key={comment.id}>
+                      <Avatar>
+                        {comment.profile_image_url ? (
+                          <AvatarImg
+                            src={comment.profile_image_url}
+                            alt={comment.nickname}
+                          />
+                        ) : (
+                          <PersonIcon />
+                        )}
+                      </Avatar>
+                      <CommentContent>
+                        <CommentHeader>
+                          <CommentUsername>{comment.nickname}</CommentUsername>
+                          <CommentText>{comment.content}</CommentText>
+                        </CommentHeader>
+                        <CommentTime>
+                          {formatRelativeTime(comment.created_at)}
+                        </CommentTime>
+                      </CommentContent>
+                    </CommentItem>
+                  ))}
+                  <div ref={sentinelRef} />
+                  {isFetchingNextPage && <LoadingText>불러오는 중...</LoadingText>}
+                </>
+              )}
             </CommentList>
           </CommentListWrapper>
 
@@ -325,7 +373,7 @@ const FeedContent = styled.div`
   }
 `;
 
-const FeedImage = styled.div`
+const ImageCarousel = styled.div`
   width: 100%;
   aspect-ratio: 1;
   overflow: hidden;
@@ -334,12 +382,74 @@ const FeedImage = styled.div`
   justify-content: center;
   background: ${theme.colors.white};
   cursor: pointer;
+  position: relative;
+`;
 
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+const CarouselImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const ArrowButton = styled.button<{ $direction: "left" | "right" }>`
+  position: absolute;
+  ${(props) => (props.$direction === "left" ? "left: 12px;" : "right: 12px;")}
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  z-index: 10;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 1);
   }
+
+  &:active {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+`;
+
+const ChevronLeft = styled.div`
+  width: 12px;
+  height: 12px;
+  border: solid ${theme.colors.dark01};
+  border-width: 2px 0 0 2px;
+  transform: rotate(-45deg);
+`;
+
+const ChevronRight = styled.div`
+  width: 12px;
+  height: 12px;
+  border: solid ${theme.colors.dark01};
+  border-width: 2px 0 0 2px;
+  transform: rotate(135deg);
+`;
+
+const DotIndicator = styled.div`
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+`;
+
+const Dot = styled.div<{ $active: boolean }>`
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: ${(props) =>
+    props.$active ? theme.colors.white : "rgba(255, 255, 255, 0.5)"};
+  transition: background-color 0.2s ease;
 `;
 
 const FeedInfo = styled.div`
@@ -500,6 +610,34 @@ const LoadingText = styled.div`
   color: ${theme.colors.dark04};
   text-align: center;
   padding: 8px 0;
+`;
+
+const EmptyState = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 16px;
+  text-align: center;
+  flex: 1;
+`;
+
+const EmptyEmoji = styled.div`
+  font-size: 48px;
+`;
+
+const EmptyTitle = styled.p`
+  ${theme.typography.body02}
+  color: ${theme.colors.dark01};
+  margin: 0;
+  font-weight: 600;
+`;
+
+const EmptySubtitle = styled.p`
+  ${theme.typography.body03}
+  color: ${theme.colors.dark04};
+  margin: 0;
 `;
 
 const CommentInputArea = styled.div`

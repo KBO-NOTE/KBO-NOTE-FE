@@ -212,25 +212,25 @@ const HomePage = () => {
                 <TeamContainer>
                   <TeamLogo
                     src={getTeamLogo(
-                      matchSummary.match.home.team_id,
-                      matchSummary.match.home.team_name,
+                      matchSummary.match?.home.team_id,
+                      matchSummary.match?.home.team_name,
                     )}
-                    alt={matchSummary.match.home.team_name}
+                    alt={matchSummary.match?.home.team_name}
                   />
-                  <TeamName>{matchSummary.match.home.team_name}</TeamName>
+                  <TeamName>{matchSummary.match?.home.team_name}</TeamName>
                 </TeamContainer>
-                <Score>{matchSummary.match.home_score}</Score>
+                <Score>{matchSummary.match?.home_score}</Score>
                 <ScoreDivider>:</ScoreDivider>
-                <Score primary>{matchSummary.match.away_score}</Score>
+                <Score primary>{matchSummary.match?.away_score}</Score>
                 <TeamContainer>
                   <TeamLogo
                     src={getTeamLogo(
-                      matchSummary.match.away.team_id,
-                      matchSummary.match.away.team_name,
+                      matchSummary.match?.away.team_id,
+                      matchSummary.match?.away.team_name,
                     )}
-                    alt={matchSummary.match.away.team_name}
+                    alt={matchSummary.match?.away.team_name}
                   />
-                  <TeamName>{matchSummary.match.away.team_name}</TeamName>
+                  <TeamName>{matchSummary.match?.away.team_name}</TeamName>
                 </TeamContainer>
               </MatchContent>
               <MatchInfo>
@@ -241,7 +241,7 @@ const HomePage = () => {
                       "경기 중계 정보가 없습니다."}
                   </MatchText>
                   <InningBadge>
-                    {`${matchSummary.match.status} · ${matchSummary.match.inning}`}
+                    {`${matchSummary.match?.status} · ${matchSummary.match?.inning}`}
                   </InningBadge>
                 </MatchDetails>
               </MatchInfo>
