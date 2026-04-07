@@ -72,6 +72,8 @@ const FeedDetailPage = () => {
 
   const images = imagesData?.images ?? [];
 
+  const isYoutubeId = content && !content.url.startsWith("http");
+
   const handleBack = () => {
     navigate(-1);
   };
@@ -127,6 +129,16 @@ const FeedDetailPage = () => {
       <MainContent>
         {/* Feed Content - Left Side */}
         <FeedContent>
+          {isYoutubeId ? (
+            <YoutubeCarousel>
+              <YoutubeIframe
+                src={`https://www.youtube.com/embed/${content.url}`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title={content.title}
+              />
+            </YoutubeCarousel>
+          ) : (
           <ImageCarousel onClick={() => window.open(content.url, "_blank")}>
             <CarouselImage
               src={
@@ -164,6 +176,7 @@ const FeedDetailPage = () => {
               </>
             )}
           </ImageCarousel>
+          )}
           <FeedInfo>
             <FeedActions>
               <ActionItem onClick={() => toggleLike()}>
@@ -371,6 +384,20 @@ const FeedContent = styled.div`
   @media (max-width: 768px) {
     max-width: 100%;
   }
+`;
+
+const YoutubeCarousel = styled.div`
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  background: ${theme.colors.dark01};
+  position: relative;
+`;
+
+const YoutubeIframe = styled.iframe`
+  width: 100%;
+  height: 100%;
+  border: none;
 `;
 
 const ImageCarousel = styled.div`
