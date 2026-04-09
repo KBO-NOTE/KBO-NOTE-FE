@@ -1,5 +1,6 @@
 import ky from "ky";
 import { refreshAccessToken } from "./auth";
+import { router } from "../router";
 
 let refreshPromise: Promise<string | undefined> | null = null;
 
@@ -11,6 +12,12 @@ const getFreshAccessToken = async () => {
   }
 
   return refreshPromise;
+};
+
+const redirectToLogin = () => {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+  router.navigate("/login?error=true", { replace: true });
 };
 
 const api = ky.create({
@@ -34,7 +41,13 @@ const api = ky.create({
         const alreadyRetried = request.headers.get("x-refresh-retry") === "1";
         const hasRefreshToken = !!localStorage.getItem("refreshToken");
 
-        if (isRefreshRequest || alreadyRetried || !hasRefreshToken) {
+        if (!hasRefreshToken) {
+          redirectToLogin();
+          return response;
+        }
+
+        if (isRefreshRequest || alreadyRetried) {
+          redirectToLogin();
           return response;
         }
 
@@ -42,6 +55,7 @@ const api = ky.create({
           const newAccessToken = await getFreshAccessToken();
 
           if (!newAccessToken) {
+            redirectToLogin();
             return response;
           }
 
@@ -54,13 +68,7 @@ const api = ky.create({
             headers,
           });
         } catch {
-          localStorage.removeItem("accessToken");
-          localStorage.removeItem("refreshToken");
-
-          if (window.location.pathname !== "/login") {
-            window.location.href = "/login?error=true";
-          }
-
+          redirectToLogin();
           return response;
         }
       },
