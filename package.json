@@ -20,6 +20,7 @@
     "styled-components": "^6.3.6"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260421.1",
     "@eslint/js": "^9.39.2",
     "@types/node": "^25.3.0",
     "@types/react": "^18.3.18",
