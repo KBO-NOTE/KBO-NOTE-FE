@@ -6,30 +6,41 @@ interface Env {
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: any): Promise<Response> {
     const url = new URL(request.url);
 
-    // [A] API 요청 처리 (/api/v1/...)
     if (url.pathname.startsWith("/api/")) {
-      // 대시보드에 입력한 VITE_API_BASE_URL 사용
-      const targetUrl = `${env.VITE_API_BASE_URL}${url.pathname}${url.search}`;
+      // 1. 변수가 들어왔는지 체크
+      if (!env.VITE_API_BASE_URL) {
+        return new Response(
+          JSON.stringify({
+            error: "환경 변수 누락",
+            detail: "VITE_API_BASE_URL이 설정되지 않았습니다. 대시보드의 Preview 환경 설정을 확인하세요.",
+            available_keys: Object.keys(env) // 현재 Worker가 알고 있는 변수 목록 출력
+          }), 
+          { status: 500, headers: { "Content-Type": "application/json" } }
+        );
+      }
 
-      // 실제 서버로 요청 전달 (Proxy)
-      const newRequest = new Request(targetUrl, request);
-      return fetch(newRequest);
+      try {
+        const targetUrl = `${env.VITE_API_BASE_URL}${url.pathname}${url.search}`;
+        
+        // 2. URL 객체 생성 시도 (형식이 잘못되면 여기서 에러 발생)
+        const proxyUrl = new URL(targetUrl);
+
+        const newRequest = new Request(proxyUrl.toString(), {
+          method: request.method,
+          headers: request.headers,
+          body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : null,
+          redirect: "follow"
+        });
+        
+        return await fetch(newRequest);
+      } catch (err: any) {
+        return new Response(`Proxy Error: ${err.message}`, { status: 500 });
+      }
     }
 
-    // [B] (선택사항) OAuth 관련 요청 처리
-    // 만약 프런트엔드에서 /oauth/... 로 호출하는 로직이 있다면 아래 주석을 해제하세요.
-    /*
-    if (url.pathname.startsWith("/oauth/")) {
-      const targetUrl = `${env.VITE_GOOGLE_OAUTH_BASE_URL}${url.pathname}${url.search}`;
-      return fetch(new Request(targetUrl, request));
-    }
-    */
-
-    // [C] 그 외 모든 요청 (HTML, JS, CSS, 이미지)
-    // dist 폴더에 있는 파일을 브라우저에 보여줍니다.
     return env.ASSETS.fetch(request);
   },
 };
