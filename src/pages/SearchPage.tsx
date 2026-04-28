@@ -67,8 +67,9 @@ const SearchPage = () => {
   const followFavoritePlayer = useFollowFavoritePlayer();
   const [searchQuery, setSearchQuery] = useState("");
   const players =
-    playersByTeam.teams.find((team) => team.team === TEAM_NAME_BY_ID[selectedTeam])
-      ?.players ?? [];
+    playersByTeam.teams.find(
+      (team) => team.team === TEAM_NAME_BY_ID[selectedTeam],
+    )?.players ?? [];
   const filteredPlayers = players.filter((player) =>
     player.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
@@ -130,12 +131,14 @@ const SearchPage = () => {
           return isSelected ? (
             <PlayerCardActive
               key={player.id}
+              playerId={player.id}
               playerName={player.name}
               onClick={() => handleSelectPlayer(playerId)}
             />
           ) : (
             <PlayerCardDefault
               key={player.id}
+              playerId={player.id}
               playerName={player.name}
               onClick={() => handleSelectPlayer(playerId)}
             />
@@ -144,13 +147,19 @@ const SearchPage = () => {
       </CardWapper>
 
       {followFavoritePlayer.isError ? (
-        <ErrorText>좋아하는 선수 등록에 실패했습니다. 다시 시도해주세요.</ErrorText>
+        <ErrorText>
+          좋아하는 선수 등록에 실패했습니다. 다시 시도해주세요.
+        </ErrorText>
       ) : null}
       <ButtonWapper>
         {selectedPlayerIds.length > 0 ? (
           <ButtonDefault
-            buttonText={followFavoritePlayer.isPending ? "등록 중..." : "선택 완료"}
-            onClick={followFavoritePlayer.isPending ? undefined : handleComplete}
+            buttonText={
+              followFavoritePlayer.isPending ? "등록 중..." : "선택 완료"
+            }
+            onClick={
+              followFavoritePlayer.isPending ? undefined : handleComplete
+            }
           />
         ) : (
           <ButtonGray buttonText="선택 완료" />

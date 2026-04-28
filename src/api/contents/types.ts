@@ -1,7 +1,7 @@
 export interface Content {
   id: number;
   title: string;
-  article_url: string;
+  url: string;
   representative_image_url: string;
   image_count: number;
   like_count: number;

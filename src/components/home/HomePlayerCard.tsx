@@ -16,7 +16,7 @@ const HomePlayerCard = ({
   return (
     <PlayerCard onClick={onClick}>
       <PlayerImage active={isActive}>
-        {playerImg ? (
+        {playerImg && !playerImg.includes("undefined") ? (
           <PlayerImg src={playerImg} alt={playerName} />
         ) : (
           <PlayerImageInner />

@@ -11,7 +11,9 @@ import { useGetFeeds } from "../api/feeds/queries";
 import { useGetFavoritePlayers } from "../api/favorites/queries";
 import type {
   BatterStatsMetrics,
+  BatterStatsSummary,
   PitcherStatsMetrics,
+  PitcherStatsSummary,
 } from "../api/stats/types";
 import React from "react";
 import { useInView } from "react-intersection-observer";
@@ -44,35 +46,35 @@ interface PlayersByTeamData {
 const playersByTeam = playersByTeamData as PlayersByTeamData;
 const TEAM_LOGO_BY_KEY: Record<string, string> = {
   doosan: doosanLogo,
-  "두산": doosanLogo,
-  "두산베어스": doosanLogo,
+  두산: doosanLogo,
+  두산베어스: doosanLogo,
   lotte: lotteLogo,
-  "롯데": lotteLogo,
-  "롯데자이언츠": lotteLogo,
+  롯데: lotteLogo,
+  롯데자이언츠: lotteLogo,
   samsung: samsungLogo,
-  "삼성": samsungLogo,
-  "삼성라이온즈": samsungLogo,
+  삼성: samsungLogo,
+  삼성라이온즈: samsungLogo,
   kiwoom: kiwoomLogo,
-  "키움": kiwoomLogo,
-  "키움히어로즈": kiwoomLogo,
+  키움: kiwoomLogo,
+  키움히어로즈: kiwoomLogo,
   hanwha: hanwhaLogo,
-  "한화": hanwhaLogo,
-  "한화이글스": hanwhaLogo,
+  한화: hanwhaLogo,
+  한화이글스: hanwhaLogo,
   kia: kiaLogo,
-  "kiatigers": kiaLogo,
-  "kia타이거즈": kiaLogo,
+  kiatigers: kiaLogo,
+  kia타이거즈: kiaLogo,
   kt: ktLogo,
-  "ktwiz": ktLogo,
-  "kt위즈": ktLogo,
+  ktwiz: ktLogo,
+  kt위즈: ktLogo,
   lg: lgLogo,
-  "lgtwins": lgLogo,
-  "lg트윈스": lgLogo,
+  lgtwins: lgLogo,
+  lg트윈스: lgLogo,
   nc: ncLogo,
-  "ncdinos": ncLogo,
-  "nc다이노스": ncLogo,
+  ncdinos: ncLogo,
+  nc다이노스: ncLogo,
   ssg: ssgLogo,
-  "ssglanders": ssgLogo,
-  "ssg랜더스": ssgLogo,
+  ssglanders: ssgLogo,
+  ssg랜더스: ssgLogo,
 };
 
 const normalizeTeamKey = (value?: string) =>
@@ -82,6 +84,33 @@ const getTeamLogo = (teamId?: string, teamName?: string) =>
   TEAM_LOGO_BY_KEY[normalizeTeamKey(teamId)] ??
   TEAM_LOGO_BY_KEY[normalizeTeamKey(teamName)] ??
   undefined;
+
+const formatBattingAverage = (value?: number) => {
+  if (value === undefined || value === null) return "-";
+  return value.toFixed(3);
+};
+
+const formatERA = (value?: number) => {
+  if (value === undefined || value === null) return "-";
+  return value.toFixed(2);
+};
+
+const formatInnings = (value?: number | string) => {
+  if (value === undefined || value === null) return "-";
+  const num = typeof value === "string" ? parseFloat(value) : value;
+  const whole = Math.floor(num);
+  const decimal = Math.round((num - whole) * 10) / 10;
+
+  if (decimal === 0.1) {
+    return `${whole}.1`;
+  } else if (decimal === 0.2) {
+    return `${whole}.2`;
+  } else if (decimal === 0) {
+    return whole.toString();
+  }
+
+  return num.toFixed(1);
+};
 
 const HomePage = () => {
   const { data: favorites } = useGetFavoritePlayers();
@@ -114,6 +143,16 @@ const HomePage = () => {
     stats?.player_type === "PITCHER"
       ? (stats.metrics as PitcherStatsMetrics)
       : null;
+
+  const batterRanks =
+    stats?.player_type === "BATTER"
+      ? (stats.summary as BatterStatsSummary)
+      : null;
+
+  const pitcherRanks =
+    stats?.player_type === "PITCHER"
+      ? (stats.summary as PitcherStatsSummary)
+      : null;
   const {
     data: feedList,
     fetchNextPage,
@@ -143,14 +182,21 @@ const HomePage = () => {
       <HomeAppBar />
       {/* Player Section */}
       <PlayerSection>
-        {playerIds.map((playerId) => (
-          <HomePlayerCard
-            playerName={playerNameById[playerId] ?? String(playerId)}
-            key={playerId}
-            isActive={activePlayerId === playerId}
-            onClick={() => setSelectedPlayerId(playerId)}
-          />
-        ))}
+        {playerIds.map((playerId) => {
+          const playerImage = new URL(
+            `../assets/images/players/${playerId}.jpg`,
+            import.meta.url,
+          ).href;
+          return (
+            <HomePlayerCard
+              playerName={playerNameById[playerId] ?? String(playerId)}
+              playerImg={playerImage}
+              key={playerId}
+              isActive={activePlayerId === playerId}
+              onClick={() => setSelectedPlayerId(playerId)}
+            />
+          );
+        })}
         <PlayerAddCard onClick={onPlayerAddClick}>
           <PlusIcon />
         </PlayerAddCard>
@@ -166,34 +212,39 @@ const HomePage = () => {
                 <TeamContainer>
                   <TeamLogo
                     src={getTeamLogo(
-                      matchSummary.match.home.team_id,
-                      matchSummary.match.home.team_name,
+                      matchSummary.match?.home.team_id,
+                      matchSummary.match?.home.team_name,
                     )}
-                    alt={matchSummary.match.home.team_name}
+                    alt={matchSummary.match?.home.team_name}
                   />
-                  <TeamName>{matchSummary.match.home.team_name}</TeamName>
+                  <TeamName>{matchSummary.match?.home.team_name}</TeamName>
                 </TeamContainer>
-                <Score>{matchSummary.match.home_score}</Score>
+                <Score>{matchSummary.match?.home_score}</Score>
                 <ScoreDivider>:</ScoreDivider>
-                <Score primary>{matchSummary.match.away_score}</Score>
+                <Score primary>{matchSummary.match?.away_score}</Score>
                 <TeamContainer>
                   <TeamLogo
                     src={getTeamLogo(
-                      matchSummary.match.away.team_id,
-                      matchSummary.match.away.team_name,
+                      matchSummary.match?.away.team_id,
+                      matchSummary.match?.away.team_name,
                     )}
-                    alt={matchSummary.match.away.team_name}
+                    alt={matchSummary.match?.away.team_name}
                   />
-                  <TeamName>{matchSummary.match.away.team_name}</TeamName>
+                  <TeamName>{matchSummary.match?.away.team_name}</TeamName>
                 </TeamContainer>
               </MatchContent>
               <MatchInfo>
                 <NoticeIcon />
                 <MatchDetails>
-                  <MatchText>{matchSummary.highlight.text}</MatchText>
-                  <InningBadge>
-                    {`${matchSummary.match.status} · ${matchSummary.match.inning}`}
-                  </InningBadge>
+                  <MatchText>
+                    {matchSummary.highlight?.text ||
+                      "경기 중계 정보가 없습니다."}
+                  </MatchText>
+                  {matchSummary.match?.inning && (
+                    <InningBadge>
+                      {`${matchSummary.match?.status} · ${matchSummary.match?.inning}`}
+                    </InningBadge>
+                  )}
                 </MatchDetails>
               </MatchInfo>
             </MatchCard>
@@ -209,17 +260,56 @@ const HomePage = () => {
             <StatsCard>
               <AchievementBadge>
                 <TrophyIcon />
-                <BadgeScroll>
-                  <BadgeText>WAR {stats.summary.war_rank}위</BadgeText>
-                  <Dot />
-                  <BadgeText>타율 {stats.summary.batting_avg_rank}위</BadgeText>
-                  <Dot />
-                  <BadgeText>안타 {stats.summary.hits_rank}위</BadgeText>
-                  <Dot />
-                  <BadgeText>타점 {stats.summary.rbi_rank}위</BadgeText>
-                  <Dot />
-                  <BadgeText>홈런 {stats.summary.home_run_rank}위</BadgeText>
-                </BadgeScroll>
+
+                {stats.player_type === "BATTER" ? (
+                  <BadgeScroll>
+                    <BadgeText>
+                      타율 {batterRanks?.batting_avg_rank}위
+                    </BadgeText>
+                    <Dot />
+                    <BadgeText>홈런 {batterRanks?.home_runs_rank}위</BadgeText>
+                    <Dot />
+                    <BadgeText>안타 {batterRanks?.hits_rank}위</BadgeText>
+                    <Dot />
+                    <BadgeText>타점 {batterRanks?.rbi_rank}위</BadgeText>
+                    <Dot />
+                    <BadgeText>득점 {batterRanks?.runs_rank}위</BadgeText>
+                    <Dot />
+                    <BadgeText>
+                      도루 {batterRanks?.stolen_bases_rank}위
+                    </BadgeText>
+                    <Dot />
+                    <BadgeText>
+                      출루율 {batterRanks?.on_base_percentage_rank}위
+                    </BadgeText>
+                    <Dot />
+                    <BadgeText>OPS {batterRanks?.ops_rank}위</BadgeText>
+                  </BadgeScroll>
+                ) : (
+                  <BadgeScroll>
+                    <BadgeText>평균자책 {pitcherRanks?.era_rank}위</BadgeText>
+                    <Dot />
+                    <BadgeText>경기 수 {pitcherRanks?.games_rank}위</BadgeText>
+                    <Dot />
+                    <BadgeText>승 {pitcherRanks?.wins_rank}위</BadgeText>
+                    <Dot />
+                    <BadgeText>세이브 {pitcherRanks?.saves_rank}위</BadgeText>
+                    <Dot />
+                    <BadgeText>홀드 {pitcherRanks?.holds_rank}위</BadgeText>
+                    <Dot />
+                    <BadgeText>
+                      이닝 {pitcherRanks?.innings_pitched_rank}위
+                    </BadgeText>
+                    <Dot />
+                    <BadgeText>
+                      탈삼진 {pitcherRanks?.strikeouts_rank}위
+                    </BadgeText>
+                    <Dot />
+                    <BadgeText>4사구 {pitcherRanks?.walks_rank}위</BadgeText>
+                    <Dot />
+                    <BadgeText>whip {pitcherRanks?.whip_rank}위</BadgeText>
+                  </BadgeScroll>
+                )}
               </AchievementBadge>
 
               {stats.player_type === "BATTER" ? (
@@ -227,7 +317,9 @@ const HomePage = () => {
                   <StatsRow>
                     <StatItem>
                       <StatLabel>타율</StatLabel>
-                      <StatValue>{batterStats?.batting_avg}</StatValue>
+                      <StatValue>
+                        {formatBattingAverage(batterStats?.batting_avg)}
+                      </StatValue>
                     </StatItem>
                     <StatItem>
                       <StatLabel>홈런</StatLabel>
@@ -253,11 +345,15 @@ const HomePage = () => {
                     </StatItem>
                     <StatItem>
                       <StatLabel>출루율</StatLabel>
-                      <StatValue>{batterStats?.on_base_percentage}</StatValue>
+                      <StatValue>
+                        {formatBattingAverage(batterStats?.on_base_percentage)}
+                      </StatValue>
                     </StatItem>
                     <StatItem>
                       <StatLabel>OPS</StatLabel>
-                      <StatValue>{batterStats?.ops}</StatValue>
+                      <StatValue>
+                        {formatBattingAverage(batterStats?.ops)}
+                      </StatValue>
                     </StatItem>
                   </StatsRow>
                 </StatsGrid>
@@ -266,7 +362,7 @@ const HomePage = () => {
                   <StatsRow>
                     <StatItem>
                       <StatLabel>ERA</StatLabel>
-                      <StatValue>{pitcherStats?.era}</StatValue>
+                      <StatValue>{formatERA(pitcherStats?.era)}</StatValue>
                     </StatItem>
                     <StatItem>
                       <StatLabel>경기</StatLabel>
@@ -284,7 +380,9 @@ const HomePage = () => {
                   <StatsRow>
                     <StatItem>
                       <StatLabel>이닝</StatLabel>
-                      <StatValue>{pitcherStats?.innings_pitched}</StatValue>
+                      <StatValue>
+                        {formatInnings(pitcherStats?.innings_pitched)}
+                      </StatValue>
                     </StatItem>
                     <StatItem>
                       <StatLabel>탈삼진</StatLabel>
@@ -296,7 +394,7 @@ const HomePage = () => {
                     </StatItem>
                     <StatItem>
                       <StatLabel>WHIP</StatLabel>
-                      <StatValue>{pitcherStats?.whip}</StatValue>
+                      <StatValue>{formatERA(pitcherStats?.whip)}</StatValue>
                     </StatItem>
                   </StatsRow>
                 </StatsGrid>

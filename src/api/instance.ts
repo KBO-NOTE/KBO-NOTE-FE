@@ -40,6 +40,7 @@ const api = ky.create({
         const isRefreshRequest = request.url.includes("/auth/refresh");
         const alreadyRetried = request.headers.get("x-refresh-retry") === "1";
         const hasRefreshToken = !!localStorage.getItem("refreshToken");
+        console.log("a");
 
         if (!hasRefreshToken) {
           redirectToLogin();
@@ -50,7 +51,11 @@ const api = ky.create({
           redirectToLogin();
           return response;
         }
-
+        console.log("b");
+        if (isRefreshRequest || alreadyRetried) {
+          return response;
+        }
+        console.log("c");
         try {
           const newAccessToken = await getFreshAccessToken();
 

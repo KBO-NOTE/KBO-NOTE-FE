@@ -35,7 +35,9 @@ const LandingPage01 = () => {
         <SubTitle>선수의 오늘, 슬기로운 크보생활</SubTitle>
         <Logo src={MainLogo} alt="KBO NOTE Logo" />
       </LogoWapper>
-      {hasError && <ErrorText>로그인에 실패했습니다. 다시 시도해주세요.</ErrorText>}
+      {hasError && (
+        <ErrorText>로그인에 실패했습니다. 다시 시도해주세요.</ErrorText>
+      )}
       <GoogleLogin onClick={handleGoogleLogin}>
         <img src={Google} alt="Google Logo" />
         <Login>구글 계정 로그인</Login>
