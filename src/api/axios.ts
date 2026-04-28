@@ -1,5 +1,6 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { refreshAccessToken } from "./auth";
+import { router } from "../router";
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -46,6 +47,8 @@ instance.interceptors.response.use(
 
     const refreshToken = localStorage.getItem("refreshToken");
     if (!refreshToken) {
+      localStorage.removeItem("accessToken");
+      router.navigate("/login?error=true", { replace: true });
       return Promise.reject(error);
     }
 
@@ -81,9 +84,7 @@ instance.interceptors.response.use(
       onRefreshed(undefined);
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
-      if (window.location.pathname !== "/login") {
-        window.location.href = "/login?error=true";
-      }
+      router.navigate("/login?error=true", { replace: true });
       return Promise.reject(refreshError);
     } finally {
       isRefreshing = false;

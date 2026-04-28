@@ -1,0 +1,11 @@
+{
+  "name": "kbo-note-fe",
+  "compatibility_date": "2026-04-21",
+  "main": "./worker/index.ts", // 워커 로직이 담길 파일 경로
+  "assets": {
+    "directory": "./dist/",
+    "binding": "ASSETS", // 정적 자산을 불러올 때 쓸 이름
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"], // 핵심: /api로 시작하는 요청은 워커가 먼저 처리!
+  },
+}
