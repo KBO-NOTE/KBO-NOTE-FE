@@ -240,9 +240,11 @@ const HomePage = () => {
                     {matchSummary.highlight?.text ||
                       "경기 중계 정보가 없습니다."}
                   </MatchText>
-                  <InningBadge>
-                    {`${matchSummary.match?.status} · ${matchSummary.match?.inning}`}
-                  </InningBadge>
+                  {matchSummary.match?.inning && (
+                    <InningBadge>
+                      {`${matchSummary.match?.status} · ${matchSummary.match?.inning}`}
+                    </InningBadge>
+                  )}
                 </MatchDetails>
               </MatchInfo>
             </MatchCard>

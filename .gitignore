@@ -31,3 +31,5 @@ tmpclaude-*
 # TypeScript build info
 *.tsbuildinfo
 .env
+PR_401_fix-local.md
+401-fix-plan-local.md
